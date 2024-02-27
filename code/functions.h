@@ -1,7 +1,8 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
-#include <Adafruit_NeoPixel.h>
+#include "variables.h"
+#include <Arduino.h>
 
-
+void getSensorDistance();
 
 #endif

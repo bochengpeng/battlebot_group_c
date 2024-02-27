@@ -2,17 +2,16 @@
 #define VARIABLES_H
 
 //pins
-int buttonOnePin = 2;
-int neoPixelPin = 3;
-int RWFPin = 5; //right wheel forward
-int LWFPin = 6; //left wheel forward
-int triggerPin = 8;
-int echoPin = 9;
-int TLPin = 10; //turn left pin
-int TRPin = 11; //turn right pin
-int lineSensorPins[] = {12, 13, 14, 15, 16, 17, 18, 19}; 
-
-
+const int buttonOnePin = 2;
+const int neoPixelPin = 3;
+const int RWFPin = 5; //right wheel forward
+const int LWFPin = 6; //left wheel forward
+const int triggerPin = 8;
+const int echoPin = 9;
+const int TLPin = 10; //turn left pin
+const int TRPin = 11; //turn right pin
+const int lineSensorPins[] = {12, 13, 14, 15, 16, 17, 18, 19}; 
+bool hasItStarted = false;
 
 
 
