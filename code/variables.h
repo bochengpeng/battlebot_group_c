@@ -1,6 +1,3 @@
-#ifndef VARIABLES_H
-#define VARIABLES_H
-
 //pins
 const int buttonOnePin = 2;
 const int neoPixelPin = 3;
@@ -12,7 +9,5 @@ const int TLPin = 10; //turn left pin
 const int TRPin = 11; //turn right pin
 const int lineSensorPins[] = {12, 13, 14, 15, 16, 17, 18, 19}; 
 bool hasItStarted = false;
-
-
-
-#endif
+float sensorDistance = 0;
+float sensorTime = 0;
