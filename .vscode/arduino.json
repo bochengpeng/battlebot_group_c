@@ -1,6 +1,0 @@
-{
-    "sketch": "code\\main.ino",
-    "configuration": "cpu=atmega328",
-    "board": "arduino:avr:nano",
-    "programmer": "arduinoasispatmega32u4"
-}
