@@ -3,8 +3,13 @@
 
 
 void setup(){
-
-
+  pinMode(triggerPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(buttonOnePin, INPUT);
+  pinMode(TLPin, INPUT);
+  pinMode(TRPin, INPUT);
+  pinMode(RWFPin, INPUT);
+  pinMode(LWFPin, INPUT);
 
 }
 
