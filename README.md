@@ -38,6 +38,11 @@ Line Maze:
 The Line Maze Game follows the game of Line Follower. In the game, players engage in the challenge of guiding a robot through a line maze from the starting point to the exit of the finish line. Using a variety of sensors, the robot must navigate the twists and turns of the line maze while avoiding dead ends. The robot needs to be programmed effectively to make intelligent decisions about taking which direction and when to change direction. It should have great accuracy to follow designated directions and avoid pauses. This game focuses on the time the robot spends on the journey to the exit and must complete the maze in the shortest time possible to earn maximum points.
 
 
+Physical Maze:
+
+The Physical Maze Game is the last part of the battle after the Line Maze Game. The bot must not only navigate through a maze without hitting any walls but also starts by picking up a cone at the beginning. As the race begins, the bot equipped with a sensor will use the right-hand method to find its way out within a time limit of 5 minutes. To succeed, the bot must be programmed to efficiently navigate the maze with the cone and reach the exit without any collisions. The goal is to complete the maze in the shortest time possible.
+
+
 
 
 
