@@ -13,7 +13,11 @@ const int middleSensorPin3 = A4;
 const int middleSensorPin4 = A5; // Analog pin for the middle-right sensor
 
 // Define motor speeds
-const int baseSpeed = 500; // Base motor speed
+const int baseSpeed = 230; // Base motor speed
+
+bool moveForward;
+bool adjustRight;
+bool adjustLeft;
 
 void setup() {
   // Set motor control pins as OUTPUT
@@ -41,12 +45,15 @@ void loop() {
   int middleSensor4Value = analogRead(middleSensorPin4);
 
   // Determine direction based on sensor readings
-  bool moveForward = (middleSensor2Value > 500 && middleSensor3Value > 500);
-  bool adjustRight = (middleSensor2Value < 500);
-  bool adjustLeft = (middleSensor3Value < 500);
+  if (middleSensor2Value > 500 && middleSensor3Value > 500) moveForward = true;
+  else moveForward = false;
+  if (middleSensor2Value < 500) adjustRight = true;
+  else adjustRight = false;
+  if (middleSensor3Value < 500) adjustLeft = true;
+  else adjustLeft = false;
 
   // Move the robot
-  move(baseSpeed, baseSpeed, moveForward, adjustRight, adjustLeft);
+  move();
 
 //   Print sensor values for testing
   Serial.print("M1: ");
@@ -61,21 +68,25 @@ void loop() {
 }
 
 // Function to move the robot
-void move(int leftSpeed, int rightSpeed, bool forward, bool adjustRight, bool adjustLeft) {
+void move() {
+  int leftSpeed, rightSpeed;
   // Adjust motor speeds based on direction adjustment
-  if (forward) {
+  if (moveForward = true) {
+     rightSpeed = leftSpeed = baseSpeed;
     if (adjustRight) {
-      rightSpeed = baseSpeed + 100; // Increase right motor speed
+      rightSpeed = baseSpeed + 10; // Increase right motor speed
+      Serial.println("r");
     } else if (adjustLeft) {
-      leftSpeed = baseSpeed + 100; // Increase left motor speed
+      leftSpeed = baseSpeed + 10; // Increase left motor speed
+      Serial.println("L");
     }
+    digitalWrite(motorA1, LOW);
+    digitalWrite(motorB2, LOW);
+
+    analogWrite(motorA2, leftSpeed);
+    analogWrite(motorB1, rightSpeed);
+
+    Serial.println("Forward");
+
   }
-
-  // Motor A
-  digitalWrite(motorA1, forward ? LOW : HIGH);
-  analogWrite(motorA2, forward ? leftSpeed : -rightSpeed);
-
-  // Motor B
-  digitalWrite(motorB2, forward ? LOW : HIGH);
-  analogWrite(motorB1, forward ? rightSpeed : -leftSpeed);
 }
