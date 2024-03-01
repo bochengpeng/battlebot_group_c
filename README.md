@@ -1,6 +1,5 @@
-# Coding Conventions:
+# CODING CONVENTIONS:
 
-Brackets have to be normal (start at the same line as the function)
 
 <br>
 
@@ -42,7 +41,7 @@ Use uppercase with underscores for constants (e.g., MAX_RETRY_COUNT, PI_VALUE).
 Add comments to explain complex algorithms, and code that might be unclear to others.
 Keep comments up to date with the code changes. 
 
-//
+// CHALLENGES
 <br>
 </details>
 <br>
