@@ -2,7 +2,9 @@
 
 Brackets have to be normal (start at the same line as the function)
 
-## Naming Conventions:
+<details>
+
+<summary>Naming Conventions</summary>
 
 ### Classes:
 Use PascalCase for class names (e.g., CarModel, CustomerAccount).
@@ -17,21 +19,31 @@ Choose meaningful and descriptive names.
 ### Constants:
 Use uppercase with underscores for constants (e.g., MAX_RETRY_COUNT, PI_VALUE).
 
+</details>
+<br>
+<details>
 
-## Indentation and Spacing:
-
+<summary>Indentation and Spacing</summary>
+<br>
 -Use consistent indentation (typically 4 spaces or a tab).
 -Add a blank line between methods and a reasonable amount of whitespace to enhance readability.
--Brachets have to be normal (start at the same line as the function) {
+-Brackets have to be normal (start at the same line as the function) {
 
 }
+<br>
+</details>
+<br>
+<details>
 
-## Comments:
-
+<summary>Comments</summary>
+<br>
 Add comments to explain complex algorithms, and code that might be unclear to others.
 Keep comments up to date with the code changes. 
 
 //
+<br>
+</details>
+<br>
 
 # Line Maze:
 
