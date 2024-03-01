@@ -2,6 +2,8 @@
 
 Brackets have to be normal (start at the same line as the function)
 
+<br>
+
 <details>
 
 <summary>Naming Conventions</summary>
