@@ -15,3 +15,5 @@ long timer = 0;
 const int leftForwardSpeed = 255;
 const int rightForwardSpeed = 250;
 int lineSensorValues[8];
+int buttonOneState;
+bool hasStarted = false;

@@ -62,3 +62,10 @@ void getLineSensorValues(){
     	timer = 50 + millis();
   }
 }
+
+void start(){
+
+	buttonOneState = digitalRead(buttonOnePin);
+	if(buttonOneState == LOW){hasStarted = true;}
+
+}

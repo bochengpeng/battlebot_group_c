@@ -1,8 +1,8 @@
 #include "variables.h"
 #include "functions.h"
 
-
 void setup(){
+
   pinMode(triggerPin, OUTPUT);
   pinMode(echoPin, INPUT);
   pinMode(buttonOnePin, INPUT);
@@ -24,6 +24,9 @@ void setup(){
 
 void loop(){
 
-getSensorDistance();
-
+  if(hasItStarted){
+    getSensorDistance();
+    getLineSensorValues();
+    mainControl();
+  }
 }
