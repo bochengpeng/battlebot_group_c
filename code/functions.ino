@@ -4,11 +4,20 @@
 
 void getSensorDistance(){
 
-digitalWrite(triggerPin, LOW);  //turn off trigger
+	digitalWrite(triggerPin, LOW);  //turn off trigger
 	delay(20);  //wait
 	digitalWrite(triggerPin, HIGH); //turn on trigger 
 	delay(100) ; //wait
 	digitalWrite(triggerPin, LOW); //turn off trigger  
 	sensorTime = pulseIn(echoPin, HIGH);  //get time
   	sensorDistance = (sensorTime*.0343)/2; //calculate distance
+}
+
+void goForward(){
+
+	analogWrite(leftForwardPin, leftForwardSpeed);
+	analogWrite(rightForwardPin, rightForwardSpeed);
+	digitalWrite(turnLeftPin, 0);
+	digitalWrite(turnRightPin, 0);
+	delay(200);
 }
