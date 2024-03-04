@@ -11,5 +11,7 @@ const int lineSensorPins[] = {12, 13, 14, 15, 16, 17, 18, 19};
 bool hasItStarted = false;
 float sensorDistance = 0;
 float sensorTime = 0;
+long timer = 0;
 const int leftForwardSpeed = 255;
 const int rightForwardSpeed = 250;
+int lineSensorValues[8];
