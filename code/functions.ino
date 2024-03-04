@@ -15,11 +15,12 @@ void getSensorDistance(){
 
 void goForward(){
 
+	neoPixelControl(1);
 	analogWrite(leftForwardPin, leftForwardSpeed);
 	analogWrite(rightForwardPin, rightForwardSpeed);
 	digitalWrite(turnLeftPin, 0);
 	digitalWrite(turnRightPin, 0);
-	delay(200);
+	delay(100);
 }
 
 void mainControl(){
@@ -36,6 +37,7 @@ void mainControl(){
 
 void turnRight(int turnAmount){
 
+	neoPixelControl(2);
 	analogWrite(leftForwardPin, 200);
 	analogWrite(rightForwardPin, 122);
 	analogWrite(turnRightPin, turnAmount);
@@ -46,6 +48,7 @@ void turnRight(int turnAmount){
 
 void turnLeft(int turnAmount){
 	
+	neoPixelControl(2);
 	analogWrite(rightForwardPin, 195);
 	analogWrite(leftForwardPin, 127);
 	analogWrite(turnLeftPin, turnAmount);
@@ -56,16 +59,37 @@ void turnLeft(int turnAmount){
 void getLineSensorValues(){
 
 	if(timer <= millis()){
-	for(int j = 0; j < sizeof(lineSensorPins); j++){
-    	lineSensorValues[j] = analogRead(lineSensorPins[j]);
-    }
-    	timer = 50 + millis();
-  }
+		for(int j = 0; j < sizeof(lineSensorPins); j++){
+			lineSensorValues[j] = analogRead(lineSensorPins[j]);
+		}
+		timer = 50 + millis();
+ 	}
 }
 
 void start(){
 
 	buttonOneState = digitalRead(buttonOnePin);
 	if(buttonOneState == LOW){hasStarted = true;}
+
+}
+
+void neoPixelControl(int state){
+
+	Adafruit_NeoPixel LEDs(4, neoPixelPin, NEO_RGB + NEO_KHZ800);
+
+	switch (state)
+	{
+	case 1:
+		LEDs.setPixelColor(0, 28, 252, 3);
+		break;
+	
+	case 2: 
+		LEDs.setPixelColor(0, 252, 219 ,3);
+		break;
+
+	default:
+		LEDs.setPixelColor(0, 252, 3, 3);
+		break;
+	}
 
 }
