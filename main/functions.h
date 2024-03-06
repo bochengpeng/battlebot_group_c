@@ -1,5 +1,3 @@
-#include "variables.h"
-
 void getSensorDistance();
 void goForward();
 void mainControl();

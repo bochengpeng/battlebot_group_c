@@ -1,3 +1,4 @@
+#include <Adafruit_NeoPixel.h>
 #include "variables.h"
 #include "functions.h"
 
@@ -28,5 +29,6 @@ void loop(){
     getSensorDistance();
     getLineSensorValues();
     mainControl();
+    goForward();
   }
 }

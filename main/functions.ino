@@ -1,9 +1,4 @@
-#include "variables.h"
-#include "functions.h"
-#include <Adafruit_NeoPixel.h>
-
 void getSensorDistance(){
-
 	digitalWrite(triggerPin, LOW);  //turn off trigger
 	delay(20);  //wait
 	digitalWrite(triggerPin, HIGH); //turn on trigger 
