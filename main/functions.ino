@@ -9,6 +9,16 @@ void getSensorDistance(){
   sensorDistance = (sensorTime*.0343)/2; //calculate distance
 }
 
+void getLineSensorValues(){
+
+	if(timer <= millis()){
+		for(int j = 0; j < sizeof(lineSensorPins); j++){
+			lineSensorValues[j] = analogRead(lineSensorPins[j]);
+		}
+		timer = 100 + millis();
+ 	}
+}
+
 void mainControl(){
 
 	if(lineSensorValues[0] > 900){turnLeft(45);}
@@ -59,21 +69,11 @@ void turnLeft(int turnAmount){
 }
 
 void stop(){
-
+  neoPixelControl(0);
   analogWrite(rightForwardPin, 0);
   analogWrite(leftForwardPin, 0);
 	analogWrite(turnLeftPin, 0);
 	analogWrite(turnRightPin, 0);
-}
-
-void getLineSensorValues(){
-
-	if(timer <= millis()){
-		for(int j = 0; j < sizeof(lineSensorPins); j++){
-			lineSensorValues[j] = analogRead(lineSensorPins[j]);
-		}
-		timer = 50 + millis();
- 	}
 }
 
 void start(){

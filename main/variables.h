@@ -17,12 +17,13 @@ float sensorTime = 0;
 //timing
 unsigned long timer = 0;
 unsigned long previousTime = 0;
-int interval = 100;
+int interval = 200;
 
 //motor values
 const int leftForwardSpeed = 255;
 const int rightForwardSpeed = 250;
 
+//lineSensor
 int lineSensorValues[8];
 
 //button

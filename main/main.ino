@@ -4,14 +4,17 @@
 
 void setup(){
 
+  //ultrasound sensor pins
   pinMode(triggerPin, OUTPUT);
   pinMode(echoPin, INPUT);
-  pinMode(buttonOnePin, INPUT);
+
+  //motion control pins
   pinMode(turnLeftPin, INPUT);
   pinMode(turnRightPin, INPUT);
   pinMode(rightForwardPin, INPUT);
   pinMode(leftForwardPin, INPUT);
 
+  //lineSensor pins
   pinMode(12, INPUT);
   pinMode(13, INPUT);
   pinMode(14, INPUT);
@@ -21,7 +24,9 @@ void setup(){
   pinMode(18, INPUT);
   pinMode(19, INPUT);
 
+  //other
   pinMode(neoPixelPin, INPUT);
+  pinMode(buttonOnePin, INPUT);
 
 }
 
