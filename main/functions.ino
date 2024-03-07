@@ -24,38 +24,38 @@ void mainControl(){
 
 void goForward(){
 
-  long turnTimer = 100 + millis();
-  if(turnTimer >= millis()){
+  if(millis() - previousTime >= interval){
 	neoPixelControl(1);
 	analogWrite(leftForwardPin, leftForwardSpeed);
 	analogWrite(rightForwardPin, rightForwardSpeed);
 	digitalWrite(turnLeftPin, 0);
 	digitalWrite(turnRightPin, 0);
   }
+  previousTime = millis();
 }
 
 void turnRight(int turnAmount){
 
-  long turnTimer = 100 + millis();
-  if(turnTimer >= millis()){
+  if(millis() - previousTime >= interval){
 	neoPixelControl(2);
 	analogWrite(leftForwardPin, 200);
 	analogWrite(rightForwardPin, 122);
 	analogWrite(turnRightPin, turnAmount);
 	analogWrite(turnRightPin, 0);
   }
+  previousTime = millis();
 }
 
 void turnLeft(int turnAmount){
 	
-  long turnTimer = 100 + millis();
-  if(turnTimer >= millis()){
+  if(millis() - previousTime >= interval){
 	neoPixelControl(2);
 	analogWrite(rightForwardPin, 195);
 	analogWrite(leftForwardPin, 127);
 	analogWrite(turnLeftPin, turnAmount);
 	analogWrite(turnLeftPin, 0);
   }
+  previousTime = millis();
 }
 
 void stop(){
