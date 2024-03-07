@@ -25,10 +25,10 @@ void setup(){
 
 void loop(){
 
-  if(hasItStarted){
+  start();
+  if(hasStarted){
     getSensorDistance();
     getLineSensorValues();
     mainControl();
-    goForward();
   }
 }

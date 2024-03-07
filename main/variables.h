@@ -8,7 +8,6 @@ const int echoPin = 9;
 const int turnLeftPin = 10; 
 const int turnRightPin = 11;
 const int lineSensorPins[] = {12, 13, 14, 15, 16, 17, 18, 19}; 
-bool hasItStarted = false;
 float sensorDistance = 0;
 float sensorTime = 0;
 long timer = 0;

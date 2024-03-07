@@ -1,8 +1,8 @@
 void getSensorDistance();
 void goForward();
 void mainControl();
-void turnLeft();
-void turnRight();
+void turnLeft(int turnAmount);
+void turnRight(int turnAmount);
 void getLineSensorValues();
 void start();
-void neoPixelControl();
+void neoPixelControl(int state);
