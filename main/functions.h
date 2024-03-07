@@ -6,3 +6,4 @@ void turnRight(int turnAmount);
 void getLineSensorValues();
 void start();
 void neoPixelControl(int state);
+void stop();

@@ -21,13 +21,15 @@ void setup(){
   pinMode(18, INPUT);
   pinMode(19, INPUT);
 
+  pinMode(neoPixelPin, INPUT);
+
 }
 
 void loop(){
 
   start();
   if(hasStarted){
-    getSensorDistance();
+   // getSensorDistance(); do not re comment until the timer has been fixed
     getLineSensorValues();
     mainControl();
   }
