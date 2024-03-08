@@ -28,6 +28,8 @@ void setup(){
   pinMode(neoPixelPin, INPUT);
   pinMode(buttonOnePin, INPUT);
 
+  LEDs.begin();
+
 }
 
 void loop(){
@@ -36,6 +38,6 @@ void loop(){
   if(hasStarted){
    // getSensorDistance(); do not re comment until the timer has been fixed
     getLineSensorValues();
-    mainControl();
+   mainControl();
   }
 }

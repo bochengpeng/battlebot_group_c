@@ -85,30 +85,25 @@ void start(){
 
 void neoPixelControl(int state){
 
-	Adafruit_NeoPixel LEDs(4, neoPixelPin, NEO_RGB + NEO_KHZ800);
-  LEDs.clear();
-  LEDs.begin();
 	switch (state)
 	{
 	case 1:
     for (int i = 0; i < 4; i++) {
     	LEDs.setPixelColor(i, 28, 252, 3);
     }
-    LEDs.show();
 		break;
 	
 	case 2: 
     for (int i = 0; i < 4; i++) {
     	LEDs.setPixelColor(i, 252, 219 ,3);
     }
-    LEDs.show();
 		break;
 
 	default:
     for (int i = 0; i < 4; i++) {
     	LEDs.setPixelColor(i, 252, 3, 3);
     }
-    LEDs.show();
 		break;
 	}
+  LEDs.show();
 }
