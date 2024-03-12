@@ -15,14 +15,14 @@ void setup(){
   pinMode(leftForwardPin, INPUT);
 
   //lineSensor pins
-  pinMode(12, INPUT);
-  pinMode(13, INPUT);
-  pinMode(14, INPUT);
-  pinMode(15, INPUT);
-  pinMode(16, INPUT);
-  pinMode(17, INPUT);
-  pinMode(18, INPUT);
-  pinMode(19, INPUT);
+  pinMode(A0, INPUT);
+  pinMode(A1, INPUT);
+  pinMode(A2, INPUT);
+  pinMode(A3, INPUT);
+  pinMode(A4, INPUT);
+  pinMode(A5, INPUT);
+  pinMode(A6, INPUT);
+  pinMode(A7, INPUT);
 
   //other
   pinMode(neoPixelPin, INPUT);

@@ -29,17 +29,17 @@ void mainControl(){
 	else if(lineSensorValues[5] > 900){turnRight(15);}
 	else if(lineSensorValues[6] > 900){turnRight(30);}
 	else if(lineSensorValues[7] > 900){turnRight(45);}
-  else {stop();}
+  //else {stop();}
 }
 
 void goForward(){
 
   if(millis() - previousTime >= interval){
-	neoPixelControl(1);
-	analogWrite(leftForwardPin, leftForwardSpeed);
-	analogWrite(rightForwardPin, rightForwardSpeed);
-	digitalWrite(turnLeftPin, 0);
-	digitalWrite(turnRightPin, 0);
+    neoPixelControl(1);
+    analogWrite(leftForwardPin, leftForwardSpeed);
+    analogWrite(rightForwardPin, rightForwardSpeed);
+    digitalWrite(turnLeftPin, 0);
+    digitalWrite(turnRightPin, 0);
   }
   previousTime = millis();
 }
@@ -47,11 +47,11 @@ void goForward(){
 void turnRight(int turnAmount){
 
   if(millis() - previousTime >= interval){
-	neoPixelControl(2);
-	analogWrite(leftForwardPin, 200);
-	analogWrite(rightForwardPin, 122);
-	analogWrite(turnRightPin, turnAmount);
-	analogWrite(turnRightPin, 0);
+    neoPixelControl(2);
+    analogWrite(leftForwardPin, 200);
+    analogWrite(rightForwardPin, 122);
+    analogWrite(turnRightPin, turnAmount);
+    analogWrite(turnRightPin, 0);
   }
   previousTime = millis();
 }
