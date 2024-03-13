@@ -36,8 +36,8 @@ void loop(){
 
   start();
   if(hasStarted){
-   // getSensorDistance(); do not re comment until the timer has been fixed
+   //getSensorDistance(); do not re comment until the timer has been fixed
     getLineSensorValues();
-   mainControl();
+    mainControl();
   }
 }

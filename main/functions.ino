@@ -15,29 +15,29 @@ void getLineSensorValues(){
 		for(int j = 0; j < sizeof(lineSensorPins); j++){
 			lineSensorValues[j] = analogRead(lineSensorPins[j]);
 		}
-		timer = 100 + millis();
+		timer = 25 + millis();
  	}
 }
 
 void mainControl(){
 
-	if(lineSensorValues[0] > 900){turnLeft(45);}
-	else if(lineSensorValues[1] > 900){turnLeft(30);}
-	else if(lineSensorValues[2] > 900){turnLeft(15);}
+	if(lineSensorValues[0] > 900){turnLeft(191);}
+	else if(lineSensorValues[1] > 900){turnLeft(127);}
+	else if(lineSensorValues[2] > 900){turnLeft(64);}
 	else if(lineSensorValues[3] > 900){goForward();}
 	else if(lineSensorValues[4] > 900){goForward();}
-	else if(lineSensorValues[5] > 900){turnRight(15);}
-	else if(lineSensorValues[6] > 900){turnRight(30);}
-	else if(lineSensorValues[7] > 900){turnRight(45);}
-  //else {stop();}
+	else if(lineSensorValues[5] > 900){turnRight(64);}
+	else if(lineSensorValues[6] > 900){turnRight(127);}
+	else if(lineSensorValues[7] > 900){turnRight(191);}
+  else {stop();}
 }
 
 void goForward(){
 
   if(millis() - previousTime >= interval){
     neoPixelControl(1);
-    analogWrite(leftForwardPin, leftForwardSpeed);
-    analogWrite(rightForwardPin, rightForwardSpeed);
+    analogWrite(leftForwardPin, 224);
+    analogWrite(rightForwardPin, 224);
     digitalWrite(turnLeftPin, 0);
     digitalWrite(turnRightPin, 0);
   }
@@ -48,10 +48,10 @@ void turnRight(int turnAmount){
 
   if(millis() - previousTime >= interval){
     neoPixelControl(2);
-    analogWrite(leftForwardPin, 200);
-    analogWrite(rightForwardPin, 122);
+    analogWrite(leftForwardPin, 0);
+    analogWrite(rightForwardPin, 255);
     analogWrite(turnRightPin, turnAmount);
-    analogWrite(turnRightPin, 0);
+    analogWrite(turnLeftPin, 0);
   }
   previousTime = millis();
 }
@@ -60,10 +60,10 @@ void turnLeft(int turnAmount){
 	
   if(millis() - previousTime >= interval){
 	neoPixelControl(2);
-	analogWrite(rightForwardPin, 195);
-	analogWrite(leftForwardPin, 127);
+	analogWrite(rightForwardPin, 0);
+	analogWrite(leftForwardPin, 255);
 	analogWrite(turnLeftPin, turnAmount);
-	analogWrite(turnLeftPin, 0);
+	analogWrite(turnRightPin, 0);
   }
   previousTime = millis();
 }
