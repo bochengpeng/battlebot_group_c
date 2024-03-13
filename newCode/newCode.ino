@@ -119,5 +119,5 @@ void loop() {
     Serial.print(" ");
   }
   Serial.println();
-  delay(100);  // Adjust delay as needed
+  delay(1000);  // Adjust delay as needed
 }
