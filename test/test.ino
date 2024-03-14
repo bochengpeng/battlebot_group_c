@@ -1,7 +1,12 @@
 const int motorA1 = 6;  // Motor A input 1
 const int motorA2 = 9;  // Motor A input 2
-const int motorB1 = 3;  // Motor B input 1
+const int motorB1 = 11;  // Motor B input 1
 const int motorB2 = 5;  // Motor B input 2
+
+// Rotation sensors
+
+const int sensorR1 = 2;
+const int sensorR2 = 3;
 
 const int numSensors = 8; // Number of line sensors
 const int sensorPins[numSensors] = {A0, A1, A2, A3, A4, A5, A6, A7}; // Analog input pins for the line sensors
@@ -15,15 +20,17 @@ bool isBlack(int sensorPin) {
 
 
 void goStraight() {
-    int speed = 180;
+    int rightSpeed = 240;
+    int leftSpeed = 255;
+    
     //left wheel anticlockwise
     digitalWrite(motorA1, LOW);
     digitalWrite(motorA2, HIGH);
-    analogWrite(motorA2, speed);
+    analogWrite(motorA2, leftSpeed);
     // right wheel anticlockwise
     digitalWrite(motorB1, HIGH);
     digitalWrite(motorB2, LOW);
-    analogWrite(motorB1, speed);
+    analogWrite(motorB1, rightSpeed);
 }
 
 void turnLeft() {
@@ -102,29 +109,35 @@ void setup() {
 void loop() {
     bool deadEnd = !isBlack(sensorPins[0]) && !isBlack(sensorPins[1]) && !isBlack(sensorPins[2]) && !isBlack(sensorPins[3]) && !isBlack(sensorPins[4]) && !isBlack(sensorPins[5]) && !isBlack(sensorPins[6]) && !isBlack(sensorPins[7]);
     bool right = isBlack(sensorPins[0]) && isBlack(sensorPins[1]); // A0,A1, the first two at the right, black
-    bool straight = isBlack(sensorPins[3]) && isBlack(sensorPins[4]); // A3, A4 Black;
+    bool straight = isBlack(sensorPins[3]) && isBlack(sensorPins[4]) && (isBlack(sensorPins[2]) && isBlack(sensorPins[5])); // A3, A4 Black;
     int deviation = abs(analogRead(sensorPins[3]) - analogRead(sensorPins[4]));//the absolute value between A3 and A4 
     bool left = isBlack(sensorPins[6]) && isBlack(sensorPins[7]); // A6,A7 the first two at the left, black
     bool rightCheck = isBlack(sensorPins[2]) && isBlack(sensorPins[3]);
-    bool leftCheck = isBlack(sensorPins[4]) && isBlack(sensorPins[5]);
+    bool leftCheck = isBlack(sensorPins[5]) && isBlack(sensorPins[6]);
     
     // read sensors to control movement
-    if (straight && deviation < 200) {
+    if (straight && deviation < 400) {
         // when the two middle sensors detect black, move forwarde
         goStraight();
-    } else if ((left && leftCheck || left && straight) && !right) {
-        turnLeft();
-    } else if (deviation > 200) {
-      if(analogRead(sensorPins[3]) > analogRead(sensorPins[4])){
+        if (deadEnd) {
+        turnAround();
+        }
+    } else if (left && !right) {
+        goStraight();
+        delay(300);
+        if (straight || leftCheck) {
+          goStraight();
+          delay(500);
+        } else if (!straight || !leftCheck || !right){
+          turnLeft();
+        }
+    } else if (deviation > 400) {
+      if (analogRead(sensorPins[3]) > analogRead(sensorPins[4])){
         toRightAdjust();
       } else {
         toLeftAdjust();
       }
-    } else if (right && left) {
+    } else if (right) {
         turnRight();
-    } else if (right && (straight || rightCheck)) {
-        turnRight();
-    } else if (deadEnd) {
-        turnAround();
-    }
+    } 
 }
