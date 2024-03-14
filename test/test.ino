@@ -34,52 +34,58 @@ void goStraight() {
 }
 
 void turnLeft() {
-    int speed = 160;
+    int rightSpeed = 210;
+    int leftSpeed = 220;
     
     digitalWrite(motorA1, HIGH);
     digitalWrite(motorA2, LOW);
-    analogWrite(motorA1, speed);
+    analogWrite(motorA1, leftSpeed);
+    
    
     digitalWrite(motorB1, HIGH);
     digitalWrite(motorB2, LOW);
-    analogWrite(motorA1, speed);
+    analogWrite(motorB1, rightSpeed);
+
 }
 
 void toLeftAdjust() {
-    int leftSpeed = 100;
+    int rightSpeed = 225;
+    int leftSpeed = 200;
     
-    digitalWrite(motorA1, HIGH);
-    digitalWrite(motorA2, LOW);
-    analogWrite(motorA1, leftSpeed);
-    
-    int rightSpeed = 120;
+    //left wheel anticlockwise
+    digitalWrite(motorA1, LOW);
+    digitalWrite(motorA2, HIGH);
+    analogWrite(motorA2, leftSpeed);
+    // right wheel anticlockwise
     digitalWrite(motorB1, HIGH);
     digitalWrite(motorB2, LOW);
-    analogWrite(motorA1, rightSpeed);
+    analogWrite(motorB1, rightSpeed);
 }
 
 void toRightAdjust() {
-    int leftSpeed = 120;
+    int rightSpeed = 160;
+    int leftSpeed = 240;
     
-    digitalWrite(motorA1, HIGH);
-    digitalWrite(motorA2, LOW);
-    analogWrite(motorA1, leftSpeed);
-    
-    int rightSpeed = 100;
+    //left wheel anticlockwise
+    digitalWrite(motorA1, LOW);
+    digitalWrite(motorA2, HIGH);
+    analogWrite(motorA2, leftSpeed);
+    // right wheel anticlockwise
     digitalWrite(motorB1, HIGH);
     digitalWrite(motorB2, LOW);
-    analogWrite(motorA1, rightSpeed);
+    analogWrite(motorB1, rightSpeed);
 }
 
 void turnRight() {
-    int speed = 160;
+    int rightSpeed = 210;
+    int leftSpeed = 220;
     
     digitalWrite(motorA1, LOW);
     digitalWrite(motorA2, HIGH);
-    analogWrite(motorA2, speed);
+    analogWrite(motorA2, leftSpeed);
     digitalWrite(motorB1, LOW);
     digitalWrite(motorB2, HIGH);
-    analogWrite(motorA2, speed);
+    analogWrite(motorB2, rightSpeed);
 }
 
 void turnAround() {
