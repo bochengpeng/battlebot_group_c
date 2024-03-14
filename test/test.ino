@@ -39,26 +39,26 @@ void turnLeft() {
 }
 
 void toLeftAdjust() {
-    int leftSpeed = 50;
+    int leftSpeed = 100;
     
     digitalWrite(motorA1, HIGH);
     digitalWrite(motorA2, LOW);
     analogWrite(motorA1, leftSpeed);
     
-    int rightSpeed = 80;
+    int rightSpeed = 120;
     digitalWrite(motorB1, HIGH);
     digitalWrite(motorB2, LOW);
     analogWrite(motorA1, rightSpeed);
 }
 
 void toRightAdjust() {
-    int leftSpeed = 80;
+    int leftSpeed = 120;
     
     digitalWrite(motorA1, HIGH);
     digitalWrite(motorA2, LOW);
     analogWrite(motorA1, leftSpeed);
     
-    int rightSpeed = 50;
+    int rightSpeed = 100;
     digitalWrite(motorB1, HIGH);
     digitalWrite(motorB2, LOW);
     analogWrite(motorA1, rightSpeed);
@@ -87,6 +87,16 @@ void setup() {
     pinMode(motorA2, OUTPUT);
     pinMode(motorB1, OUTPUT);
     pinMode(motorB2, OUTPUT);
+
+    pinMode(A0, INPUT);
+    pinMode(A1, INPUT);
+    pinMode(A2, INPUT);
+    pinMode(A3, INPUT);
+    pinMode(A4, INPUT);
+    pinMode(A5, INPUT);
+    pinMode(A6, INPUT);
+    pinMode(A7, INPUT);
+    
 }
 
 void loop() {
@@ -99,20 +109,20 @@ void loop() {
     bool leftCheck = isBlack(sensorPins[4]) && isBlack(sensorPins[5]);
     
     // read sensors to control movement
-    if (straight && deviation < 550) {
+    if (straight && deviation < 200) {
         // when the two middle sensors detect black, move forwarde
         goStraight();
-    } else if (left && !right) {
+    } else if ((left && leftCheck || left && straight) && !right) {
         turnLeft();
-    } else if (deviation > 700) {
+    } else if (deviation > 200) {
       if(analogRead(sensorPins[3]) > analogRead(sensorPins[4])){
         toRightAdjust();
       } else {
         toLeftAdjust();
       }
-    } else if (straight && left) {
-        turnLeft();
-    } else if (!left && right && (straight || rightCheck)) {
+    } else if (right && left) {
+        turnRight();
+    } else if (right && (straight || rightCheck)) {
         turnRight();
     } else if (deadEnd) {
         turnAround();
