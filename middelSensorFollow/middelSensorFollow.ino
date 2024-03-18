@@ -7,13 +7,15 @@ const int motorB2 = 5;  // Motor B input 2
 // Define line sensor pins
 const int numSensors = 8; // Number of line sensors
 const int sensorPins[numSensors] = {A0, A1, A2, A3, A4, A5, A6, A7}; // Analog input pins for the line sensors
-const int middleSensorPin1 = A2; // Analog pin for the middle-left sensor
+const int middleSensorPin1 = A2;
 const int middleSensorPin2 = A3;
 const int middleSensorPin3 = A4;
-const int middleSensorPin4 = A5; // Analog pin for the middle-right sensor
+const int middleSensorPin4 = A5;
 
 // Define motor speeds
-const int baseSpeed = 230; // Base motor speed
+const int baseSpeedLeft = 240; // Base motor speed
+const int baseSpeedRight = 230; // Base motor speed
+
 
 bool moveForward;
 bool adjustRight;
@@ -45,17 +47,26 @@ void loop() {
   int middleSensor4Value = analogRead(middleSensorPin4);
 
   // Determine direction based on sensor readings
-  if (middleSensor2Value > 500 && middleSensor3Value > 500) moveForward = true;
-  else moveForward = false;
-  if (middleSensor2Value < 500) adjustRight = true;
-  else adjustRight = false;
-  if (middleSensor3Value < 500) adjustLeft = true;
-  else adjustLeft = false;
+  if (middleSensor2Value > 550 && middleSensor3Value > 550) {
+    moveForward = true;
+  }
+  else if (middleSensor2Value < 450 && middleSensor3Value > 550) {
+    adjustRight = true;
+  }
+  else if (middleSensor2Value < 450 && middleSensor3Value > 550) {
+    adjustLeft = true;
+  }
+  else {
+    adjustLeft = false;
+    adjustRight = false;
+    moveForward = false;
+  }
+  
 
   // Move the robot
   move();
-
-//   Print sensor values for testing
+ 
+  //   Print sensor values for testing
   Serial.print("M1: ");
   Serial.print(middleSensor1Value);
   Serial.print("\tM2: ");
@@ -65,21 +76,17 @@ void loop() {
   Serial.print("\tM4: ");
   Serial.println(middleSensor4Value);
   delay(100); // Delay for stability
+ 
 }
 
 // Function to move the robot
 void move() {
   int leftSpeed, rightSpeed;
   // Adjust motor speeds based on direction adjustment
-  if (moveForward = true) {
-     rightSpeed = leftSpeed = baseSpeed;
-    if (adjustRight) {
-      rightSpeed = baseSpeed + 10; // Increase right motor speed
-      Serial.println("r");
-    } else if (adjustLeft) {
-      leftSpeed = baseSpeed + 10; // Increase left motor speed
-      Serial.println("L");
-    }
+  if (moveForward) {
+     rightSpeed = baseSpeedRight;
+    leftSpeed = baseSpeedLeft;
+     
     digitalWrite(motorA1, LOW);
     digitalWrite(motorB2, LOW);
 
@@ -89,4 +96,12 @@ void move() {
     Serial.println("Forward");
 
   }
+  else if (adjustRight) {
+      rightSpeed = baseSpeedRight + 20; // Increase right motor speed
+      Serial.println("R");
+  }
+  else if (adjustLeft) {
+      leftSpeed = baseSpeedLeft + 20; // Increase left motor speed
+      Serial.println("L");
+    }
 }
