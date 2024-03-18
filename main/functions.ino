@@ -35,7 +35,7 @@ void mainControl(){
 void goForward(){
 
   if(millis() - previousTime >= interval){
-    neoPixelControl(1);
+    //neoPixelControl(1);
     analogWrite(leftForwardPin, 224);
     analogWrite(rightForwardPin, 224);
     digitalWrite(turnLeftPin, 0);
@@ -47,7 +47,7 @@ void goForward(){
 void turnRight(int turnAmount){
 
   if(millis() - previousTime >= interval){
-    neoPixelControl(2);
+    //neoPixelControl(2);
     analogWrite(leftForwardPin, 255);
     analogWrite(rightForwardPin, 0);
     analogWrite(turnRightPin, turnAmount);
@@ -59,17 +59,17 @@ void turnRight(int turnAmount){
 void turnLeft(int turnAmount){
 	
   if(millis() - previousTime >= interval){
-	neoPixelControl(2);
-	analogWrite(rightForwardPin, 255);
-	analogWrite(leftForwardPin, 0);
-	analogWrite(turnLeftPin, turnAmount);
-	analogWrite(turnRightPin, 0);
+    //neoPixelControl(2);
+    analogWrite(rightForwardPin, 255);
+    analogWrite(leftForwardPin, 0);
+    analogWrite(turnLeftPin, turnAmount);
+    analogWrite(turnRightPin, 0);
   }
   previousTime = millis();
 }
 
 void stop(){
-  neoPixelControl(0);
+  //neoPixelControl(0);
   analogWrite(rightForwardPin, 0);
   analogWrite(leftForwardPin, 0);
 	analogWrite(turnLeftPin, 0);

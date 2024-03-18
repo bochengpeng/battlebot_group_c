@@ -28,16 +28,16 @@ void setup(){
   pinMode(neoPixelPin, INPUT);
   pinMode(buttonOnePin, INPUT);
 
-  LEDs.begin();
+  //LEDs.begin();
 
 }
 
 void loop(){
 
-  start();
-  if(hasStarted){
-   //getSensorDistance(); do not re comment until the timer has been fixed
-    getLineSensorValues();
-    mainControl();
-  }
+  //getSensorDistance(); do not re comment until the timer has been fixed
+  getLineSensorValues();
+  mainControl();
+  //TODO:
+  //Rework the start function
+  //Figure out if NeoPixels can be fixed
 }
