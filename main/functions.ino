@@ -86,6 +86,35 @@ bool start(){
   else return false;
 }
 
+void avoidObject(){
+
+  if(sensorDistance >= 25){
+    //turn right 90 degrees ->
+    turnRight(255);
+    delay(100); //we can use delays here since we're taking "manual" control and there is no line
+
+    //go forward a bit |
+    goForward();
+    delay(100);
+
+    //turn left <-
+    turnLeft(255);
+    delay(100);
+
+    //go forward |
+    goForward();
+    delay(200);
+
+    //turn left <-
+    turnLeft(255);
+    delay(100);
+
+    //go forward | and pray we find the line
+    goForward();
+  }
+
+}
+
 void neoPixelControl(int state){
 
 	switch (state)

@@ -10,7 +10,7 @@ const int turnLeftPin = 10;
 const int turnRightPin = 11;
 const int lineSensorPins[] = {A0, A1, A2, A3, A4, A5, A6, A7}; 
 
-//ultrasound sensor
+//ultrasonic sensor
 float sensorDistance = 0;
 float sensorTime = 0;
 

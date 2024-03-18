@@ -36,13 +36,20 @@ void loop(){
 
   getSensorDistance();
   if(start()){
+    avoidObject();
     getLineSensorValues();
     mainControl();
   }
 
-  //TODO:
-  //make the sonic sensor better
-  //Figure out if NeoPixels can be fixed
-  //program the gripper
-  //create a fucnction to detect the end of the track and shut down
+  /*
+  TODO: (order from most important to least)
+
+  calibrate the avoid object function
+  program the gripper
+  create a fucnction to detect the end of the track and shut down
+  make the sonic sensor better
+  Figure out if NeoPixels can be fixed
+
+  */
+
 }
