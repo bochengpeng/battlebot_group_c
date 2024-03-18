@@ -7,9 +7,14 @@ int motorspeed1 = 234;
 int motorspeed2 = 255;
 int check = 0;
 
+int rightRotation = 2; //R1
+int leftRotation = 3; //R2
+volatile int rotationRight = 0;
+volatile int rotationLeft = 0;
+
 // Define pins for the ultrasonic sensor
-const int trigPin = 2; // Trigger pin
-const int echoPin = 3; // Echo pin
+const int trigPin = 11; // Trigger pin
+const int echoPin = 12; // Echo pin
 
 // Define variables for distance calculation
 long duration = 1000;
@@ -25,10 +30,56 @@ void setup() {
   // Set trigPin as an output and echoPin as an input
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
+
+  pinMode(rightRotation, INPUT);//rotation sensor
+  pinMode(leftRotation, INPUT);//rotation sensor
+
+  attachInterrupt(digitalPinToInterrupt(rightRotation),updateRightRotations,CHANGE);
+  attachInterrupt(digitalPinToInterrupt(leftRotation) ,updateLeftRotations,CHANGE);
   
   Serial.begin(9600);
 
 }
+
+void stopRobot()
+{
+  digitalWrite(L1, LOW);
+  digitalWrite(L2, LOW);
+  digitalWrite(R1, LOW);
+  digitalWrite(R2, LOW);
+}
+
+void updateRightRotations(){
+  noInterrupts();
+  rotationRight++;
+  interrupts();
+  return;
+}
+
+void updateLeftRotations(){
+  noInterrupts();
+  rotationLeft++;
+  interrupts();
+  return;
+}
+
+void moveForwardInRotations (int rotations){
+  
+  if(rotationRight < rotations && rotationLeft < rotations){
+    analogWrite(L2,motorspeed1);
+    analogWrite(R1,motorspeed2);
+    delay(10);
+  }
+  else
+  {
+    resetRotations();
+  }
+}
+ 
+void resetRotations(){
+  rotationRight = 0;
+  rotationLeft = 0;
+  }
 
 void moveForward(int motorspeed1 , int motorspeed2) {
   // Motor 1
@@ -99,8 +150,10 @@ void loop() {
     // Turn right
     turnRight(motorspeed1 , motorspeed2);
     delay(450);
+    
   } else {
     // Move forward if no obstacle detected
-    moveForward(motorspeed1 , motorspeed2);
+      resetRotations();
+      moveForwardInRotations(20);
   }
 }
