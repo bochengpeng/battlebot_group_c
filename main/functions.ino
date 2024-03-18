@@ -1,21 +1,22 @@
 
 void getSensorDistance(){
-	digitalWrite(triggerPin, LOW);  //turn off trigger
-	//delay(20); change this to millis  
-	digitalWrite(triggerPin, HIGH); //turn on trigger 
-	//delay(100); also this
-	digitalWrite(triggerPin, LOW); //turn off trigger  
-	sensorTime = pulseIn(echoPin, HIGH);  //get time
-  sensorDistance = (sensorTime*.0343)/2; //calculate distance
+
+    digitalWrite(triggerPin, HIGH); //turn on trigger
+    if(millis() - previousSonicTime >= 100){
+      digitalWrite(triggerPin, LOW); //turn off trigger
+    }
+    previousSonicTime = millis();
+    sensorTime = pulseIn(echoPin, HIGH);  //get time
+    if(sensorTime > 0.00) {sensorDistance = (sensorTime*.0343)/2;} //calculate distance
 }
 
 void getLineSensorValues(){
 
-	if(timer <= millis()){
+	if(lineTimer <= millis()){
 		for(int j = 0; j < sizeof(lineSensorPins); j++){
 			lineSensorValues[j] = analogRead(lineSensorPins[j]);
 		}
-		timer = 50 + millis();
+		lineTimer = 50 + millis();
  	}
 }
 
@@ -80,7 +81,6 @@ void start(){
 
 	buttonOneState = digitalRead(buttonOnePin);
 	if(buttonOneState == LOW){hasStarted = true;}
-
 }
 
 void neoPixelControl(int state){

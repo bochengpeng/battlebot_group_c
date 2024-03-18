@@ -15,9 +15,10 @@ float sensorDistance = 0;
 float sensorTime = 0;
 
 //timing
-unsigned long timer = 0;
+unsigned long lineTimer = 0;
 unsigned long previousTime = 0;
 int interval = 75;
+unsigned long previousSonicTime = 0;
 
 //motor values
 const int leftForwardSpeed = 255;

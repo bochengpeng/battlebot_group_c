@@ -34,10 +34,11 @@ void setup(){
 
 void loop(){
 
-  //getSensorDistance(); do not re comment until the timer has been fixed
+  getSensorDistance();
   getLineSensorValues();
   mainControl();
   //TODO:
+  //make the sonic sensor better
   //Rework the start function
   //Figure out if NeoPixels can be fixed
 }
