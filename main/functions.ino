@@ -77,10 +77,13 @@ void stop(){
 	analogWrite(turnRightPin, 0);
 }
 
-void start(){
+bool start(){
 
-	buttonOneState = digitalRead(buttonOnePin);
-	if(buttonOneState == LOW){hasStarted = true;}
+  if(sensorDistance > 20 && (analogRead(leftForwardPin == 0 ) || analogRead(rightForwardPin == 0)))
+  {
+    return true;
+  }
+  else return false;
 }
 
 void neoPixelControl(int state){

@@ -35,8 +35,10 @@ void setup(){
 void loop(){
 
   getSensorDistance();
-  getLineSensorValues();
-  mainControl();
+  if(start()){
+    getLineSensorValues();
+    mainControl();
+  }
   //TODO:
   //make the sonic sensor better
   //Rework the start function
