@@ -39,8 +39,10 @@ void loop(){
     getLineSensorValues();
     mainControl();
   }
+
   //TODO:
   //make the sonic sensor better
-  //Rework the start function
   //Figure out if NeoPixels can be fixed
+  //program the gripper
+  //create a fucnction to detect the end of the track and shut down
 }
