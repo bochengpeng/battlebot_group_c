@@ -21,11 +21,11 @@ void getLineSensorValues(){
 
 void mainControl(){
 
-	if(lineSensorValues[0] > 900){turnLeft(90);}
+  if(lineSensorValues[3] > 900){goForward();}
+	else if(lineSensorValues[4] > 900){goForward();}
+	else if(lineSensorValues[0] > 900){turnLeft(90);}
 	else if(lineSensorValues[1] > 900){turnLeft(60);}
 	else if(lineSensorValues[2] > 900){turnLeft(30);}
-	else if(lineSensorValues[3] > 900){goForward();}
-	else if(lineSensorValues[4] > 900){goForward();}
 	else if(lineSensorValues[5] > 900){turnRight(30);}
 	else if(lineSensorValues[6] > 900){turnRight(60);}
 	else if(lineSensorValues[7] > 900){turnRight(90);}
