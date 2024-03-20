@@ -29,6 +29,7 @@ void setup(){
   pinMode(buttonOnePin, INPUT);
 
   //LEDs.begin();
+  Serial.begin(9600);
 
 }
 

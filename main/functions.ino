@@ -1,4 +1,4 @@
-/*
+
 void getSensorDistance(){
 
     digitalWrite(triggerPin, HIGH); //turn on trigger
@@ -8,21 +8,22 @@ void getSensorDistance(){
     previousSonicTime = millis();
     sensorTime = pulseIn(echoPin, HIGH);  //get time
     if(sensorTime > 0.00) {sensorDistance = (sensorTime*.0343)/2;} //calculate distance
+    Serial.println(sensorDistance);
 }
-*/
+/*
 void getSensorDistance(){
-  digitalWrite(triggerPin, LOW);
-  delayMicroseconds(2);
   // Sets the trigPin on HIGH state for 10 micro seconds
   digitalWrite(triggerPin, HIGH);
-  delayMicroseconds(10);
+  delay(50);
   digitalWrite(triggerPin, LOW);
   // Reads the echoPin, returns the sound wave travel time in microseconds
   sensorTime = pulseIn(echoPin, HIGH);
   // Calculating the distance
   sensorDistance = sensorTime * 0.034 / 2;
+  Serial.println(sensorDistance);
 }
 
+*/
 void getLineSensorValues(){
 
 	if(lineTimer <= millis()){
@@ -101,7 +102,7 @@ bool start(){
 
 void avoidObject(){
 
-  if(sensorDistance < 25){
+  if(sensorDistance < 20){
     //turn right 90 degrees ->
     turnRight(255);
     delay(500); //we can use delays here since we're taking "manual" control and there is no line
