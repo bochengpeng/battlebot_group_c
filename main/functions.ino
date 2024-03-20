@@ -1,4 +1,4 @@
-
+/*
 void getSensorDistance(){
 
     digitalWrite(triggerPin, HIGH); //turn on trigger
@@ -8,6 +8,19 @@ void getSensorDistance(){
     previousSonicTime = millis();
     sensorTime = pulseIn(echoPin, HIGH);  //get time
     if(sensorTime > 0.00) {sensorDistance = (sensorTime*.0343)/2;} //calculate distance
+}
+*/
+void getSensorDistance(){
+  digitalWrite(triggerPin, LOW);
+  delayMicroseconds(2);
+  // Sets the trigPin on HIGH state for 10 micro seconds
+  digitalWrite(triggerPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(triggerPin, LOW);
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  sensorTime = pulseIn(echoPin, HIGH);
+  // Calculating the distance
+  sensorDistance = sensorTime * 0.034 / 2;
 }
 
 void getLineSensorValues(){
@@ -88,26 +101,26 @@ bool start(){
 
 void avoidObject(){
 
-  if(sensorDistance >= 25){
+  if(sensorDistance < 25){
     //turn right 90 degrees ->
     turnRight(255);
-    delay(100); //we can use delays here since we're taking "manual" control and there is no line
+    delay(500); //we can use delays here since we're taking "manual" control and there is no line
 
     //go forward a bit |
     goForward();
-    delay(100);
+    delay(500);
 
     //turn left <-
     turnLeft(255);
-    delay(100);
+    delay(500);
 
     //go forward |
     goForward();
-    delay(200);
+    delay(300);
 
     //turn left <-
     turnLeft(255);
-    delay(100);
+    delay(300);
 
     //go forward | and pray we find the line
     goForward();
@@ -115,6 +128,7 @@ void avoidObject(){
 
 }
 
+/*
 void neoPixelControl(int state){
 
 	switch (state)
@@ -139,3 +153,4 @@ void neoPixelControl(int state){
 	}
   LEDs.show();
 }
+*/

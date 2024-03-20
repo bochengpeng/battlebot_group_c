@@ -31,4 +31,4 @@ int lineSensorValues[8];
 int buttonOneState;
 bool hasStarted = false;
 
-Adafruit_NeoPixel LEDs(4, neoPixelPin, NEO_RGB + NEO_KHZ800);
+//Adafruit_NeoPixel LEDs(4, neoPixelPin, NEO_RGB + NEO_KHZ800);
