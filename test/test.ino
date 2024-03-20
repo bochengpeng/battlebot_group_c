@@ -15,13 +15,13 @@ const int sensorPins[numSensors] = {A0, A1, A2, A3, A4, A5, A6, A7}; // Analog i
 
 // read sensor
 bool isBlack(int sensorPin) {
-    return analogRead(sensorPin) > 900; // when sensor value > 800 means on black
+    return analogRead(sensorPin) > 800; // when sensor value > 800 means on black
 }
 
 
 void goStraight() {
-    int rightSpeed = 240;
-    int leftSpeed = 255;
+    int rightSpeed = 220;
+    int leftSpeed = 235;
     
     //left wheel anticlockwise
     digitalWrite(motorA1, LOW);
@@ -34,8 +34,8 @@ void goStraight() {
 }
 
 void turnLeft() {
-    int rightSpeed = 210;
-    int leftSpeed = 220;
+    int rightSpeed = 190;
+    int leftSpeed = 200;
     
     digitalWrite(motorA1, HIGH);
     digitalWrite(motorA2, LOW);
@@ -49,8 +49,8 @@ void turnLeft() {
 }
 
 void toLeftAdjust() {
-    int rightSpeed = 225;
-    int leftSpeed = 200;
+    int rightSpeed = 205;
+    int leftSpeed = 280;
     
     //left wheel anticlockwise
     digitalWrite(motorA1, LOW);
@@ -63,8 +63,8 @@ void toLeftAdjust() {
 }
 
 void toRightAdjust() {
-    int rightSpeed = 160;
-    int leftSpeed = 240;
+    int rightSpeed = 140;
+    int leftSpeed = 220;
     
     //left wheel anticlockwise
     digitalWrite(motorA1, LOW);
@@ -77,8 +77,8 @@ void toRightAdjust() {
 }
 
 void turnRight() {
-    int rightSpeed = 210;
-    int leftSpeed = 220;
+    int rightSpeed = 190;
+    int leftSpeed = 200;
     
     digitalWrite(motorA1, LOW);
     digitalWrite(motorA2, HIGH);
@@ -101,6 +101,8 @@ void setup() {
     pinMode(motorB1, OUTPUT);
     pinMode(motorB2, OUTPUT);
 
+    Serial.begin(9600);
+
     pinMode(A0, INPUT);
     pinMode(A1, INPUT);
     pinMode(A2, INPUT);
@@ -113,37 +115,33 @@ void setup() {
 }
 
 void loop() {
+
+    // Read sensor values
+    int sensorValues[numSensors];
+    for (int i = 0; i < numSensors; i++) {
+      sensorValues[i] = analogRead(sensorPins[i]);
+    }
+    
     bool deadEnd = !isBlack(sensorPins[0]) && !isBlack(sensorPins[1]) && !isBlack(sensorPins[2]) && !isBlack(sensorPins[3]) && !isBlack(sensorPins[4]) && !isBlack(sensorPins[5]) && !isBlack(sensorPins[6]) && !isBlack(sensorPins[7]);
     bool right = isBlack(sensorPins[0]) && isBlack(sensorPins[1]); // A0,A1, the first two at the right, black
-    bool straight = isBlack(sensorPins[3]) && isBlack(sensorPins[4]) && (isBlack(sensorPins[2]) && isBlack(sensorPins[5])); // A3, A4 Black;
+    bool straight = isBlack(sensorPins[3]) && isBlack(sensorPins[4]); // A3, A4 Black;
     int deviation = abs(analogRead(sensorPins[3]) - analogRead(sensorPins[4]));//the absolute value between A3 and A4 
     bool left = isBlack(sensorPins[6]) && isBlack(sensorPins[7]); // A6,A7 the first two at the left, black
     bool rightCheck = isBlack(sensorPins[2]) && isBlack(sensorPins[3]);
     bool leftCheck = isBlack(sensorPins[5]) && isBlack(sensorPins[6]);
     
     // read sensors to control movement
-    if (straight && deviation < 400) {
+    if (!isBlack(sensorPins[0]) && !isBlack(sensorPins[1]) && !isBlack(sensorPins[2]) && isBlack(sensorPins[3]) && isBlack(sensorPins[4]) && !isBlack(sensorPins[5]) && !isBlack(sensorPins[6]) && !isBlack(sensorPins[7]) && deviation < 200) {
         // when the two middle sensors detect black, move forwarde
         goStraight();
-        if (deadEnd) {
-        turnAround();
-        }
-    } else if (left && !right) {
-        goStraight();
-        delay(300);
-        if (straight || leftCheck) {
-          goStraight();
-          delay(500);
-        } else if (!straight || !leftCheck || !right){
-          turnLeft();
-        }
-    } else if (deviation > 400) {
-      if (analogRead(sensorPins[3]) > analogRead(sensorPins[4])){
+
+    } else if (deviation > 200) {
+      if(analogRead(sensorPins[3]) > analogRead(sensorPins[4])) {
         toRightAdjust();
       } else {
         toLeftAdjust();
       }
-    } else if (right) {
+    } else if (isBlack(sensorPins[0]) && isBlack(sensorPins[1]) && isBlack(sensorPins[2]) && isBlack(sensorPins[3]) && isBlack(sensorPins[4]) && isBlack(sensorPins[5]) && isBlack(sensorPins[6]) && isBlack(sensorPins[7])) {
         turnRight();
-    } 
+    }
 }
