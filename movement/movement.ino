@@ -3,9 +3,9 @@ int L2 = 9;
 int R1 = 6;
 int R2 = 5;
 int counter = 0;
-int motorspeed1 = 234;
+int motorspeed1 = 255;
 int motorspeed2 = 255;
-int check = 1;
+int fixServo = 0;
 int ultraServo = 11; // servo for the ultrasonic sensor
 
 int rightRotation = 2; //R1
@@ -40,19 +40,18 @@ void setup() {
   pinMode(trigPinSide, OUTPUT);
   pinMode(echoPinSide, INPUT);
 
-  pinMode(rightRotation, INPUT);//rotation sensor
-  pinMode(leftRotation, INPUT);//rotation sensor
+  pinMode(rightRotation, INPUT_PULLUP);//rotation sensor
+  pinMode(leftRotation, INPUT_PULLUP);//rotation sensor
 
   attachInterrupt(digitalPinToInterrupt(rightRotation),updateRightRotations,CHANGE);
   attachInterrupt(digitalPinToInterrupt(leftRotation) ,updateLeftRotations,CHANGE);
 
 
   pinMode(ultraServo , OUTPUT);
+  digitalWrite(ultraServo, LOW);
   Serial.begin(9600);
 
 }
-
-
 
 void stopRobot()
 {
@@ -66,52 +65,104 @@ void updateRightRotations(){
   noInterrupts();
   rotationRight++;
   interrupts();
-  return;
 }
 
 void updateLeftRotations(){
   noInterrupts();
   rotationLeft++;
   interrupts();
-  return;
 }
 
-void moveForwardInRotations (int rotations){
-
-  if(distanceCmSide > 8)
-  {
-    analogWrite(L1, 0);
-    analogWrite(L2, motorspeed1);
-    analogWrite(R1, 180);
-    analogWrite(R2, 0);
-  }
-  else if(distanceCmSide < 7)
-  {
-    analogWrite(L1, 0);
-    analogWrite(L2, 180);
-    analogWrite(R1, motorspeed2);
-    analogWrite(R2, 0);
-  }
-  else if(rotationRight < rotations && rotationLeft < rotations){
-  // Motor 1
-  analogWrite(L1, 0);
-  analogWrite(L2, motorspeed1);
-  // Motor 2
-  analogWrite(R1, motorspeed2);
-  analogWrite(R2, 0);
-  delay(10);
-  }
-  else
-  {
-    resetRotations();
-    stopRobot();
-  }
-}
- 
 void resetRotations(){
   rotationRight = 0;
   rotationLeft = 0;
-  }
+}
+
+void moveForwardInRotations (int rotations){
+  resetRotations();
+  while(rotationRight < rotations){
+     // Motor 1
+     analogWrite(L1, 0);
+     analogWrite(L2, motorspeed1);
+     // Motor 2
+     analogWrite(R1, motorspeed2);
+     analogWrite(R2, 0);
+    }
+  stopRobot();
+}
+
+
+void moveForwardInRotationsWithAdjusting (int rotations){
+  resetRotations();
+//  while(rotationRight < rotations){
+    distanceCmSide = getUltrasonicCm(trigPinSide , echoPinSide);
+    if(distanceCmSide > 10)
+    {
+      analogWrite(L1, 0);
+      analogWrite(L2, motorspeed1 - 10);
+      analogWrite(R1, 200);
+      analogWrite(R2, 0);
+    }
+    else if(distanceCmSide >= 9)
+    {
+      analogWrite(L1, 0);
+      analogWrite(L2, motorspeed1 - 10);
+      analogWrite(R1, 230);
+      analogWrite(R2, 0);
+    }
+    else if(distanceCmSide < 6)
+    {
+      analogWrite(L1, 0);
+      analogWrite(L2, 100);
+      analogWrite(R1, motorspeed2);
+      analogWrite(R2, 0);
+    }
+    else{
+      // Motor 1
+      analogWrite(L1, 0);
+      analogWrite(L2, motorspeed1 - 10);
+      // Motor 2
+      analogWrite(R1, motorspeed2);
+      analogWrite(R2, 0);
+    }
+//  }
+//  stopRobot();
+}
+
+void moveBackwardInRotationsWithAdjusting (int rotations){
+    resetRotations();
+    distanceCmSide = getUltrasonicCm(trigPinSide , echoPinSide);
+    if(distanceCmSide > 10)
+    {
+      analogWrite(L1, motorspeed1);
+      analogWrite(L2, 0);
+      analogWrite(R1, 0);
+      analogWrite(R2, 200);
+    }
+    else if(distanceCmSide >= 9)
+    {
+      analogWrite(L1, motorspeed1);
+      analogWrite(L2, 0);
+      analogWrite(R1, 0);
+      analogWrite(R2, 230);
+    }
+    else if(distanceCmSide < 6)
+    {
+      analogWrite(L1, 100);
+      analogWrite(L2, 0);
+      analogWrite(R1, 0);
+      analogWrite(R2, motorspeed2);
+    }
+    else{
+      // Motor 1
+      analogWrite(L1, motorspeed1);
+      analogWrite(L2, 0);
+      // Motor 2
+      analogWrite(R1, 0);
+      analogWrite(R2, motorspeed2);
+    }
+}
+
 
 void moveForward(int motorspeed1 , int motorspeed2) {
   // Motor 1
@@ -131,23 +182,58 @@ void moveBackward(int motorspeed1 , int motorspeed2) {
   analogWrite(R2, motorspeed2);
 }
 
-void turnLeft(int motorspeed1 , int motorspeed2) {
-  // Motor 1
-  analogWrite(L1, motorspeed1);
-  analogWrite(L2, 0);
-  // Motor 2
-  analogWrite(R1, motorspeed2);
-  analogWrite(R2, 0);
+void turnLeft(int motorspeed1 , int motorspeed2, int r) {
+  resetRotations();
+
+  while(r > rotationRight){
+    // Motor 1
+    analogWrite(L1, 0);
+    analogWrite(L2, 0);
+    // Motor 2
+    analogWrite(R1, motorspeed2 - 15);
+    analogWrite(R2, 0);
+  }
+  stopRobot();
 }
 
-void turnRight(int motorspeed1 , int motorspeed2) {
-  // Motor 1
-  analogWrite(L1, 0);
-  analogWrite(L2, motorspeed1);
-  // Motor 2
-  analogWrite(R1, 0);
-  analogWrite(R2, motorspeed2);
-  
+void turnLeftReversed(int motorspeed1 , int motorspeed2, int r) {
+  resetRotations();
+
+  while(r > rotationRight){
+    // Motor 1
+    analogWrite(L1, 0);
+    analogWrite(L2, 0);
+    // Motor 2
+    analogWrite(R1, 0);
+    analogWrite(R2, motorspeed2 - 15);
+  }
+  stopRobot();
+}
+
+void turnRight(int motorspeed1 , int motorspeed2, int r) {
+  resetRotations();
+
+  while(r > rotationLeft){
+    // Motor 1
+    analogWrite(L1, 0);
+    analogWrite(L2, motorspeed1- 15);
+    // Motor 2
+    analogWrite(R1, 0);
+    analogWrite(R2, 0);
+   } 
+}
+
+void turnRightReversed(int motorspeed1 , int motorspeed2, int r) {
+  resetRotations();
+
+  while(r > rotationLeft){
+    // Motor 1
+    analogWrite(L1, motorspeed1- 15);
+    analogWrite(L2, 0);
+    // Motor 2
+    analogWrite(R1, 0);
+    analogWrite(R2, 0);
+   } 
 }
 
 int getUltrasonicCm(int trigPin , int echoPin)
@@ -167,22 +253,11 @@ int getUltrasonicCm(int trigPin , int echoPin)
   return distance;
 }
 
-void rotateUltraServoLeft()
-{
-  for(int i = 0 ; i<=5 ; i++)
-  {
-    digitalWrite(ultraServo , HIGH);
-    delayMicroseconds(2400);
-    digitalWrite(ultraServo , LOW);
-    delayMicroseconds(17600);
-  }
-}
-
 void rotateUltraServo(int angle)
 {
-  for(int i = 0 ;  i<=10 ; i++)
+  for(int i = 0 ;  i<5 ; i++)
   {
-    int pulseWidth = map(angle, 90 , -90 , 600 , 2400);
+    int pulseWidth = map(angle, -90 , 90 , 600 , 2400);
     digitalWrite(ultraServo , HIGH);
     delayMicroseconds(pulseWidth);
     digitalWrite(ultraServo , LOW);
@@ -190,41 +265,64 @@ void rotateUltraServo(int angle)
   }
 }
 
-int getDistanceLeft()
-{
-  stopRobot();
-  rotateUltraServoLeft();
-  return getUltrasonicCm(trigPinFront , echoPinFront);
-}
-
 void loop() {
-  rotateUltraServo(-90);
-  rotateUltraServo(0);
-  
   distanceCmFront = getUltrasonicCm(trigPinFront , echoPinFront);
   distanceCmSide = getUltrasonicCm(trigPinSide , echoPinSide);
-  
-  Serial.println(distanceCmFront);
+//  Serial.print("Side = ");
+//  Serial.println(distanceCmSide);
+//    Serial.print("Front = ");
+//    Serial.println(distanceCmFront);
+
   if(distanceCmSide > 30)
   {
-    moveForward(motorspeed1 , motorspeed2);
-    delay(450);
-    turnRight(motorspeed1 , motorspeed2);
-    delay(450);
-    moveForward(motorspeed1 , motorspeed2);
-    delay(350);
-  }
-  else if(distanceCmFront < 11 && distanceCmSide < 30)
-  {
-    turnLeft(motorspeed1 , motorspeed2);
-    delay(450);
-    moveForward(motorspeed1 , motorspeed2);
-    delay(350);
-  }
-  else 
-  {
-    Serial.println("Stuck in forward");
+    Serial.println("I wanna turn rightt");
+    stopRobot();
     moveForwardInRotations(20);
+    stopRobot();
+    turnRight(motorspeed1 , motorspeed2 , 35);
+    stopRobot();
+    delay(500);
+    moveForwardInRotations(10);
+    stopRobot();
   }
+  else if(distanceCmFront < 12)
+  {
+    stopRobot();
+    rotateUltraServo(90);
+    distanceCmFront = getUltrasonicCm(trigPinFront , echoPinFront);
 
+    if(distanceCmFront > 30)
+    {
+      Serial.println("I wanna turn left");
+      rotateUltraServo(0);
+      turnLeft(motorspeed1 , motorspeed2 , 30);
+      stopRobot();
+      delay(500);
+      moveForwardInRotations(10);
+      stopRobot();
+    }
+    else{
+      moveForwardInRotations(10);
+      stopRobot();
+      turnRightReversed(motorspeed1 , motorspeed2 , 15);
+      stopRobot();
+      moveBackward(motorspeed1 , motorspeed2);
+      delay(250);
+      turnRightReversed(motorspeed1 , motorspeed2 , 15);
+      stopRobot();
+      moveBackward(motorspeed1 , motorspeed2);
+      delay(200);
+      stopRobot();
+      turnLeft(motorspeed1 , motorspeed2 , 35);
+      stopRobot();
+      moveBackward(motorspeed1 , motorspeed2);
+      delay(300);
+      rotateUltraServo(0);
+      stopRobot();
+    }
+  }
+  else
+  {
+    moveForwardInRotationsWithAdjusting(5);
+  }
 }
