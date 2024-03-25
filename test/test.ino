@@ -147,37 +147,44 @@ void setup() {
 }
 
 void loop() {
-
+  
     bool deadEnd = !isBlack(sensorPins[0]) && !isBlack(sensorPins[1]) && !isBlack(sensorPins[2]) && !isBlack(sensorPins[3]) && !isBlack(sensorPins[4]) && !isBlack(sensorPins[5]) && !isBlack(sensorPins[6]) && !isBlack(sensorPins[7]);
     bool right = isBlack(sensorPins[0]); // A0,A1, the first two at the right, black
     bool straight = !isBlack(sensorPins[0]) && !isBlack(sensorPins[1]) && !isBlack(sensorPins[2]) && isBlack(sensorPins[3]) && isBlack(sensorPins[4]) && !isBlack(sensorPins[5]) && !isBlack(sensorPins[6]) && !isBlack(sensorPins[7]); // A3, A4 Black;
-    int deviation = abs(analogRead(sensorPins[3]) - analogRead(sensorPins[4]));//the absolute value between A3 and A4 
+    bool adjustRight =  isBlack(sensorPins[2]);
+    bool adjustLeft = isBlack(sensorPins[5]);
     bool left = isBlack(sensorPins[7]); // A6,A7 the first two at the left, black
     bool rightCheck = isBlack(sensorPins[2]) && isBlack(sensorPins[3]);
     bool leftCheck = isBlack(sensorPins[5]) && isBlack(sensorPins[6]);
     bool tCross = isBlack(sensorPins[0]) && isBlack(sensorPins[1]) && isBlack(sensorPins[2]) && isBlack(sensorPins[3]) && isBlack(sensorPins[4]) && isBlack(sensorPins[5]) && isBlack(sensorPins[6]) && isBlack(sensorPins[7]);
     
-    // read sensors to control movement
-    if (straight && deviation < 200) {
+    
+    if (right || tCross) {
+        turnRight();
+        Serial.println("turnRight");
+    } else if (adjustRight) {
+        toRightAdjust();
+        Serial.println("toRightAdjust");
+        
+        if (right) {
+          turnRight();
+        }
+    } else if (adjustLeft) {
+        toLeftAdjust();
+        Serial.println("toLeftAdjust");
+
+        if (left) {
+        goStraight();
+        
+          if (!isBlack(sensorPins[3]) || !isBlack(sensorPins[4]) || !isBlack(sensorPins[5]) || !isBlack(sensorPins[6]) || !isBlack(sensorPins[7])) {
+              turnLeft();
+              Serial.println("turnLeft");
+          }
+        }
+    } else if (straight) {
         // when the two middle sensors detect black, move forwarde
         goStraight();
+        Serial.println("goStraight");
 
-        
-    } else if (deviation > 200) {
-      if(analogRead(sensorPins[3]) > analogRead(sensorPins[4])) {
-        toRightAdjust();
-      } else {
-        toLeftAdjust();
-      }
-    } 
-    
-    else if (right || tCross) {
-        turnRight();
-    } else if (left && !right) {
-        goStraight();
-        
-        if (!isBlack(sensorPins[3]) || !isBlack(sensorPins[4]) || !isBlack(sensorPins[5]) || !isBlack(sensorPins[6]) || !isBlack(sensorPins[7])) {
-            turnLeft();
-        }
     } 
 }
