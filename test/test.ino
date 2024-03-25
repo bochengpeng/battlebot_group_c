@@ -39,8 +39,8 @@ bool isBlack(int sensorPin) {
 
 
 void goStraight() {
-    int rightSpeed = 220;
-    int leftSpeed = 235;
+    int rightSpeed = 180;
+    int leftSpeed = 180;
     
     //left wheel anticlockwise
     digitalWrite(motorA1, LOW);
@@ -67,14 +67,13 @@ void turnLeft() {
 }
 
 void toLeftAdjust() {
-    int rightSpeed = 200; 
-    int leftSpeed = 270;  
+    int rightSpeed = 230; 
+    int leftSpeed = 150; 
+    
     
     digitalWrite(motorA1, LOW);
-    digitalWrite(motorA2, HIGH);
     analogWrite(motorA2, leftSpeed);
     
-    digitalWrite(motorB1, HIGH);
     digitalWrite(motorB2, LOW);
     analogWrite(motorB1, rightSpeed);
 }
@@ -83,11 +82,10 @@ void toRightAdjust() {
     int rightSpeed = 150; 
     int leftSpeed = 230; 
     
+    
     digitalWrite(motorA1, LOW);
-    digitalWrite(motorA2, HIGH);
     analogWrite(motorA2, leftSpeed);
     
-    digitalWrite(motorB1, HIGH);
     digitalWrite(motorB2, LOW);
     analogWrite(motorB1, rightSpeed);
 }
