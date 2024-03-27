@@ -25,6 +25,9 @@ void ISR_R(){
   countR++;
 }
 
+bool deadEndFlag = false;
+int consecutiveDeadEndCount = 0;
+
 
 // read sensor
 bool isBlack(int sensorPin) {
@@ -217,7 +220,7 @@ void maze() {
     
     bool deadEnd = !isBlack(sensorPins[0]) && !isBlack(sensorPins[1]) && !isBlack(sensorPins[2]) && !isBlack(sensorPins[3]) && !isBlack(sensorPins[4]) && !isBlack(sensorPins[5]) && !isBlack(sensorPins[6]) && !isBlack(sensorPins[7]);
     bool right = isBlack(sensorPins[0]); // A0,A1, the first two at the right, black
-    bool straight = (isBlack(sensorPins[3]) || isBlack(sensorPins[4])) && !isBlack(sensorPins[0]) && !isBlack(sensorPins[1]) && !isBlack(sensorPins[2]) && !isBlack(sensorPins[5]) && !isBlack(sensorPins[6]) && !isBlack(sensorPins[7]);
+    bool straight = !isBlack(sensorPins[2]) && !isBlack(sensorPins[5]);
     bool adjustRight =  isBlack(sensorPins[2]);
     bool adjustLeft = isBlack(sensorPins[5]);
     bool left = isBlack(sensorPins[7]); // A6,A7 the first two at the left, black
@@ -246,21 +249,42 @@ void maze() {
         Serial.println("Right");
     } else if (left && !right) {
         beforeTurningLeft();
+        deadEndFlag = true;
+        consecutiveDeadEndCount = 1;
         Serial.println("BeforeLeft");
         
           if (straight) {
               goStraight();
+              deadEndFlag = false;
+              consecutiveDeadEndCount = 0;
               Serial.println("NOPStraight");
           }
     }
 
     if (deadEnd) {
-        beforeTurning();
-        moveStop();
-        delay(500);
-        turnLeft();
-        moveStop();
-        delay(1000);
-        Serial.println("LEFT");
+        if (!deadEndFlag) {
+            beforeTurningLeft();
+            moveStop();
+            delay(500);
+            turnLeft();
+            moveStop();
+            delay(1000);
+            Serial.println("LEFT");
+            deadEndFlag = true;
+            consecutiveDeadEndCount++;
+        } else {
+            moveStop();
+            delay(500);
+            turnLeft();
+            moveStop();
+            delay(1000);
+            Serial.println("LEFT");
+            
+            consecutiveDeadEndCount++;
+            if (consecutiveDeadEndCount >= 2) {
+                deadEndFlag = false;
+                consecutiveDeadEndCount = 0;
+            }
+        }
     }
 }
