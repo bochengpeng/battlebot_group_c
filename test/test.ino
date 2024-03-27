@@ -5,29 +5,25 @@ const int motorB2 = 5;  // Motor B input 2
 
 // Rotation sensors
 
-const int sensorR1 = 2;
-const int sensorR2 = 3;
+#define ROTATION_SENSOR_LEFT 2
+#define ROTATION_SENSOR_RIGHT 3
 
 const int numSensors = 8; // Number of line sensors
 const int sensorPins[numSensors] = {A0, A1, A2, A3, A4, A5, A6, A7}; // Analog input pins for the line sensors
 
 
-//volatile int countL = 0;
-//volatile int countR = 0;
+volatile int countL = 0;
+volatile int countR = 0;
 
 
-//void incL(){
-  //countL++;
-  //Serial.print("Left Sensor Count: ");
-  //Serial.println(countL);
-//}
+void ISR_L(){
+  countL++;
+}
 
 
-//void incR(){
-  //countR++;
-  //Serial.print("Right Sensor Count: ");
-  //Serial.println(countR);
-//}
+void ISR_R(){
+  countR++;
+}
 
 
 // read sensor
@@ -39,31 +35,76 @@ bool isBlack(int sensorPin) {
 
 
 void goStraight() {
-    int rightSpeed = 180;
-    int leftSpeed = 180;
+
+    
+    int rightSpeed = 220;
+    int leftSpeed = 235;
     
     //left wheel anticlockwise
     digitalWrite(motorA1, LOW);
-    digitalWrite(motorA2, HIGH);
     analogWrite(motorA2, leftSpeed);
     
     // right wheel anticlockwise
-    digitalWrite(motorB1, HIGH);
     digitalWrite(motorB2, LOW);
     analogWrite(motorB1, rightSpeed);
+    
+    
+}
+
+void beforeTurning() {
+
+  countL=0;
+  countR=0;
+  
+  while(countL < 6 && countR < 6){
+    int rightSpeed = 220;
+    int leftSpeed = 235;
+    
+    //left wheel anticlockwise
+    digitalWrite(motorA1, LOW);
+    analogWrite(motorA2, leftSpeed);
+    
+    // right wheel anticlockwise
+    digitalWrite(motorB2, LOW);
+    analogWrite(motorB1, rightSpeed);
+  }
+}
+
+void beforeTurningLeft() {
+
+  countL=0;
+  countR=0;
+  
+  while(countL < 18 && countR < 18){
+    int rightSpeed = 220;
+    int leftSpeed = 235;
+    
+    //left wheel anticlockwise
+    digitalWrite(motorA1, LOW);
+    analogWrite(motorA2, leftSpeed);
+    
+    // right wheel anticlockwise
+    digitalWrite(motorB2, LOW);
+    analogWrite(motorB1, rightSpeed);
+  }
 }
 
 void turnLeft() {
-    int rightSpeed = 200; 
-    int leftSpeed = 240;  
+
+    countL=0;
+    countR=0;
+
+    while(countR < 19 && countL < 19) {
+      int rightSpeed = 235; 
+      int leftSpeed = 245;  
     
-    digitalWrite(motorA1, HIGH);
-    digitalWrite(motorA2, LOW);
-    analogWrite(motorA1, leftSpeed);
+      analogWrite(motorA1, leftSpeed);
+      digitalWrite(motorA2, LOW);
     
-    digitalWrite(motorB1, HIGH);
-    digitalWrite(motorB2, LOW);
-    analogWrite(motorB1, rightSpeed);
+      digitalWrite(motorB2, LOW);
+      analogWrite(motorB1, rightSpeed);
+    }
+    
 }
 
 void toLeftAdjust() {
@@ -80,7 +121,7 @@ void toLeftAdjust() {
 
 void toRightAdjust() {
     int rightSpeed = 150; 
-    int leftSpeed = 230; 
+    int leftSpeed = 245; 
     
     
     digitalWrite(motorA1, LOW);
@@ -91,24 +132,35 @@ void toRightAdjust() {
 }
 
 void turnRight() {
-    int rightSpeed = 220; 
-    int leftSpeed = 250;  
 
-    digitalWrite(motorA1, LOW);
-    digitalWrite(motorA2, HIGH);
-    analogWrite(motorA2, leftSpeed);
+    countL=0;
+    countR=0;
     
-    digitalWrite(motorB1, LOW);
-    digitalWrite(motorB2, HIGH);
-    analogWrite(motorB2, rightSpeed);
+    while((!isBlack(sensorPins[3]) || !isBlack(sensorPins[4]))||(countL < 32)) {
+      
+      int rightSpeed = 220; 
+      int leftSpeed = 240;  
+
+      digitalWrite(motorA1, LOW);
+      analogWrite(motorA2, leftSpeed);
+    
+      digitalWrite(motorB1, LOW);
+      analogWrite(motorB2, LOW);
+    }
+    
 }
 
 void turnAround() {
 
-    digitalWrite(motorA1, LOW);
-    digitalWrite(motorA2, HIGH);
-    digitalWrite(motorB1, LOW);
-    digitalWrite(motorB2, HIGH);
+    countL=0;
+    countR=0;
+
+    while((!isBlack(sensorPins[3]) || !isBlack(sensorPins[4]))||(countL < 38 && countR < 38)) {
+        digitalWrite(motorA1, LOW);
+        digitalWrite(motorA2, HIGH);
+        digitalWrite(motorB1, LOW);
+        digitalWrite(motorB2, HIGH);
+    }
     
 }
 
@@ -136,19 +188,36 @@ void setup() {
     pinMode(A6, INPUT);
     pinMode(A7, INPUT);
 
-    pinMode(sensorR1,INPUT_PULLUP);
-    pinMode(sensorR2,INPUT_PULLUP);
+    pinMode(ROTATION_SENSOR_LEFT,INPUT_PULLUP);
+    pinMode(ROTATION_SENSOR_RIGHT,INPUT_PULLUP);
 
-    //attachInterrupt(digitalPinToInterrupt(sensorR1), incL, CHANGE);
-    //attachInterrupt(digitalPinToInterrupt(sensorR2), incR, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(ROTATION_SENSOR_LEFT), ISR_L, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(ROTATION_SENSOR_RIGHT), ISR_R, CHANGE);
   
 }
 
 void loop() {
   
+  maze();
+    
+}
+
+void checkSensors(bool sensorValues[]) {
+    for (int i = 0; i < numSensors; ++i) {
+        sensorValues[i] = isBlack(sensorPins[i]);
+    }
+}
+
+void maze() {
+
+    // Array to store sensor values
+    bool sensorValues[numSensors];
+
+    checkSensors(sensorValues);
+    
     bool deadEnd = !isBlack(sensorPins[0]) && !isBlack(sensorPins[1]) && !isBlack(sensorPins[2]) && !isBlack(sensorPins[3]) && !isBlack(sensorPins[4]) && !isBlack(sensorPins[5]) && !isBlack(sensorPins[6]) && !isBlack(sensorPins[7]);
     bool right = isBlack(sensorPins[0]); // A0,A1, the first two at the right, black
-    bool straight = !isBlack(sensorPins[0]) && !isBlack(sensorPins[1]) && !isBlack(sensorPins[2]) && isBlack(sensorPins[3]) && isBlack(sensorPins[4]) && !isBlack(sensorPins[5]) && !isBlack(sensorPins[6]) && !isBlack(sensorPins[7]); // A3, A4 Black;
+    bool straight = (isBlack(sensorPins[3]) || isBlack(sensorPins[4])) && !isBlack(sensorPins[0]) && !isBlack(sensorPins[1]) && !isBlack(sensorPins[2]) && !isBlack(sensorPins[5]) && !isBlack(sensorPins[6]) && !isBlack(sensorPins[7]);
     bool adjustRight =  isBlack(sensorPins[2]);
     bool adjustLeft = isBlack(sensorPins[5]);
     bool left = isBlack(sensorPins[7]); // A6,A7 the first two at the left, black
@@ -157,32 +226,41 @@ void loop() {
     bool tCross = isBlack(sensorPins[0]) && isBlack(sensorPins[1]) && isBlack(sensorPins[2]) && isBlack(sensorPins[3]) && isBlack(sensorPins[4]) && isBlack(sensorPins[5]) && isBlack(sensorPins[6]) && isBlack(sensorPins[7]);
     
     
-    if (right || tCross) {
+    if (straight) {
+       goStraight();
+       Serial.println("Straight");
+       
+    }
+
+    else if (adjustRight && !adjustLeft) {
+          toRightAdjust();
+          Serial.println("ADRight");
+    } else if (adjustLeft && !adjustRight) {
+      toLeftAdjust();
+      Serial.println("ADLeft");
+    }
+
+    if (tCross || right) {
+        beforeTurning();
         turnRight();
-        Serial.println("turnRight");
-    } else if (adjustRight) {
-        toRightAdjust();
-        Serial.println("toRightAdjust");
+        Serial.println("Right");
+    } else if (left && !right) {
+        beforeTurningLeft();
+        Serial.println("BeforeLeft");
         
-        if (right) {
-          turnRight();
-        }
-    } else if (adjustLeft) {
-        toLeftAdjust();
-        Serial.println("toLeftAdjust");
-
-        if (left) {
-        goStraight();
-        
-          if (!isBlack(sensorPins[3]) || !isBlack(sensorPins[4]) || !isBlack(sensorPins[5]) || !isBlack(sensorPins[6]) || !isBlack(sensorPins[7])) {
-              turnLeft();
-              Serial.println("turnLeft");
+          if (straight) {
+              goStraight();
+              Serial.println("NOPStraight");
           }
-        }
-    } else if (straight) {
-        // when the two middle sensors detect black, move forwarde
-        goStraight();
-        Serial.println("goStraight");
+    }
 
-    } 
+    if (deadEnd) {
+        beforeTurning();
+        moveStop();
+        delay(500);
+        turnLeft();
+        moveStop();
+        delay(1000);
+        Serial.println("LEFT");
+    }
 }
