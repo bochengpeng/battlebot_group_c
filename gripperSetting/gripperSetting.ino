@@ -1,27 +1,17 @@
 
 const int gripperPin = 10; // Pin connected to the servo signal wire
-// Define servo pulse width constants
-const int minPulseWidth = 910; // Minimum pulse width in microseconds
-const int maxPulseWidth = 2000; // Maximum pulse width in microseconds
+const long maxDistance = 200; 
 
-// Function to set servo angle 
-void setServoAngle(int angle, int servoPin)
-{
-  int pulseWidth = map(angle, 0, 180, minPulseWidth, maxPulseWidth);
-  digitalWrite(servoPin, HIGH); // Start the pulse
-  delayMicroseconds(pulseWidth); // Wait for the pulse width
-  digitalWrite(servoPin, LOW); // End the pulse
-  delay(20); // wait for servo to settle
+void closeGripper() {
+    digitalWrite(gripperPin, HIGH); // Start the pulse
+    delayMicroseconds(1000); // Pulse width for neutral position (0 degrees)
+    digitalWrite(gripperPin, LOW); // End the pulse
 }
 
-void gripOpen()
-{
-  setServoAngle(90, gripperPin);
-}
-
-void gripClose()
-{
-  setServoAngle(0, gripperPin);
+void openGripper() {
+    digitalWrite(gripperPin, HIGH); // Start the pulse
+    delayMicroseconds(1500); // Pulse width for opened position (90 degrees)
+    digitalWrite(gripperPin, LOW); // End the pulse
 }
 
 
@@ -32,9 +22,10 @@ void setup() {
 
 void loop() {
 
-gripOpen();
-delay(500);
-gripClose();
-delay(2000);
+  closeGripper();
+  delay(2000);
+  openGripper();
+  delay(2000);
+  closeGripper();
 
 }
