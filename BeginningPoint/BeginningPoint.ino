@@ -207,7 +207,7 @@ void checkSensors(bool sensorValues[]) {
     }
 }
 
-void lineCountAndGrabing(){
+void lineCountAndGrab(){
   if(lineCount < 4){
       openGripper();
       goStraight();
@@ -238,6 +238,6 @@ void loop(){
     
     if(startingPoint){
       delay(80);//time for removing hands
-      lineCountAndGrabing();
+      lineCountAndGrab();
     }
 }
