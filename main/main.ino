@@ -1,10 +1,8 @@
-//#include <Adafruit_NeoPixel.h>
-//#include "variables.h"
-//#include "functions.h"
+#include <Adafruit_NeoPixel.h>
+
 
 //pins
-const int buttonOnePin = 2;
-//const int neoPixelPin = 3;
+const int neoPixelPin = 3;
 const int rightForwardPin = 5; 
 const int leftForwardPin = 6; 
 const int triggerPin = 8;
@@ -12,7 +10,7 @@ const int echoPin = 9;
 const int turnLeftPin = 10; 
 const int turnRightPin = 11;
 const int lineSensorPins[] = {A0, A1, A2, A3, A4, A5, A6, A7}; 
-const int gripperPin = 3;
+const int gripperPin = 4;
 
 //ultrasonic sensor
 float sensorDistance = 0;
@@ -21,28 +19,25 @@ float sensorTime = 0;
 //timing
 unsigned long lineTimer = 0;
 unsigned long previousTime = 0;
+unsigned long endTimer = 0;
+unsigned long avoidTimer = 0;
 int interval = 75;
-unsigned long previousSonicTime = 0;
-
-//motor values
-const int leftForwardSpeed = 255;
-const int rightForwardSpeed = 250;
+unsigned long neoPixelTimer = 0;
 
 //lineSensor
 int lineSensorValues[8];
-int count = 0;
 
 //start and end
 bool hasStarted = false;
 bool hasEnded = false;
 
-//Adafruit_NeoPixel LEDs(4, neoPixelPin, NEO_RGB + NEO_KHZ800);
+Adafruit_NeoPixel LEDs(4, neoPixelPin, NEO_RGB + NEO_KHZ800);
 
 
 void setup(){
   
 
-  //ultrasound sensor pins
+  //ultrasonic sensor pins
   pinMode(triggerPin, OUTPUT);
   pinMode(echoPin, INPUT);
 
@@ -64,9 +59,12 @@ void setup(){
   Serial.begin(9600);
 
   //other
-  //pinMode(neoPixelPin, INPUT);
-  //LEDs.begin();
+  pinMode(neoPixelPin, INPUT);
   pinMode(gripperPin, OUTPUT);
+  digitalWrite(gripperPin, LOW);
+  putDownObject();
+  LEDs.begin();
+  beforeStartNeoPixel();
   
 }
 
@@ -75,24 +73,20 @@ void loop(){
   getSensorDistance();
   start();
   end();
-  if(hasStarted){
-    //avoidObject();
+  if(hasStarted)
+  {
+    avoidObject();
     getLineSensorValues();
     mainControl();
   }
 }
-  /*
-  TODO: (order from most important to least)
 
-  create a fucnction to detect the end of the track and shut down
-  make the sonic sensor better
-  figue out if we can use multiple files
-  Figure out if NeoPixels can be fixed
+//TODO:
+//add comments
+//make neopixel cooler
 
-  */
-
-void getSensorDistance(){
-  //Sets the trigPin on HIGH state for 10 micro seconds
+void getSensorDistance()
+{
   digitalWrite(triggerPin, HIGH);
   delayMicroseconds(5);
   digitalWrite(triggerPin, LOW);
@@ -102,10 +96,13 @@ void getSensorDistance(){
   sensorDistance = sensorTime * 0.034 / 2;
 }
 
-void getLineSensorValues(){
+void getLineSensorValues()
+{
 
-	if(lineTimer <= millis()){
-		for(int j = 0; j < sizeof(lineSensorPins); j++){
+	if(lineTimer <= millis())
+  {
+		for(int j = 0; j < sizeof(lineSensorPins); j++)
+    {
 			lineSensorValues[j] = analogRead(lineSensorPins[j]);
 		}
 		lineTimer = 50 + millis();
@@ -113,6 +110,8 @@ void getLineSensorValues(){
 }
 
 void mainControl(){
+
+  getLineSensorValues();
   if(lineSensorValues[3] > 900){goForward();}
 	else if(lineSensorValues[4] > 900){goForward();}
 	else if(lineSensorValues[0] > 900){turnLeft(90);}
@@ -121,11 +120,13 @@ void mainControl(){
 	else if(lineSensorValues[5] > 900){turnRight(30);}
 	else if(lineSensorValues[6] > 900){turnRight(60);}
 	else if(lineSensorValues[7] > 900){turnRight(90);}
+  
 }
 
 
-void pickUpObject(int angle) {
-  if(hasStarted == true)
+void pickUpObject()
+{
+  for(int i = 0; i < 15; i++)
   {
     digitalWrite(gripperPin, HIGH);
     delayMicroseconds(1000);
@@ -133,18 +134,19 @@ void pickUpObject(int angle) {
   }
 }
 
-void putDownObject(){
-  if(hasEnded == true){
+void putDownObject()
+{
+  for(int i = 0; i < 15; i++)
+  {
    digitalWrite(gripperPin, HIGH);
-   delayMicroseconds(2000);
+   delayMicroseconds(1700);
    digitalWrite(gripperPin, LOW);
   }
 }
 
 void goForward(){
-
-  if(millis() - previousTime >= interval){
-    //neoPixelControl(1);
+  if(millis() - previousTime >= interval)
+  {
     analogWrite(leftForwardPin, 224);
     analogWrite(rightForwardPin, 224);
     digitalWrite(turnLeftPin, 0);
@@ -153,10 +155,12 @@ void goForward(){
   previousTime = millis();
 }
 
-void turnRight(int turnAmount){
+void turnRight(int turnAmount)
+{
 
-  if(millis() - previousTime >= interval){
-    //neoPixelControl(2);
+  if(millis() - previousTime >= interval)
+  {
+    turnRightNeoPixel();
     analogWrite(leftForwardPin, 255);
     analogWrite(rightForwardPin, 0);
     analogWrite(turnRightPin, turnAmount);
@@ -165,10 +169,12 @@ void turnRight(int turnAmount){
   previousTime = millis();
 }
 
-void turnLeft(int turnAmount){
+void turnLeft(int turnAmount)
+{
 	
-  if(millis() - previousTime >= interval){
-    //neoPixelControl(2);
+  if(millis() - previousTime >= interval)
+  {
+    turnLeftNeoPixel();
     analogWrite(rightForwardPin, 255);
     analogWrite(leftForwardPin, 0);
     analogWrite(turnLeftPin, turnAmount);
@@ -177,51 +183,60 @@ void turnLeft(int turnAmount){
   previousTime = millis();
 }
 
-void stop(){
-  //neoPixelControl(0);
+void stop()
+{
   analogWrite(rightForwardPin, 0);
   analogWrite(leftForwardPin, 0);
 	analogWrite(turnLeftPin, 0);
 	analogWrite(turnRightPin, 0);
 }
 
-void start(){
+void start()
+{
 
-  if(hasEnded == false && sensorDistance > 20 && hasStarted == false){
+  if(hasEnded == false && sensorDistance > 20 && hasStarted == false)
+  {
+    startNeoPixel();
     hasStarted = true;
     goForward();
-    delay(700);
-    pickUpObject(90);
-    delay(300);
+    delay(1000);
+    pickUpObject();
     turnLeft(255);
     delay(700);
     goForward();
   } 
 }
 
-void end(){
+void end()
+{
 
-  count = 0;
-  for (int i = 0; i < 8; i++) {
-    if(lineSensorValues[i] > 900)
-    {
-      count++;
-    }
-  }
-
-  if(count == 8)
+  if(lineSensorValues[0] > 900 && lineSensorValues[3] > 900 && lineSensorValues[7] > 900)
   {
-    hasEnded = true;
-    hasStarted = false;
-    stop();
-    putDownObject();
+    
+    if(millis() - endTimer >= 300)
+    {
+      getLineSensorValues();
+      if(lineSensorValues[0] > 900 && lineSensorValues[3] > 900 && lineSensorValues[7] > 900)
+      {
+        endNeoPixel();
+        hasEnded = true;
+        hasStarted = false;
+        stop();
+        putDownObject();
+      } 
+    }
+    endTimer = millis();
   }
 }
 
-void avoidObject(){
+void avoidObject()
+{
 
-  if(sensorDistance < 25){
+  getSensorDistance();
+  if(sensorDistance <= 28)
+  {
 
+    delay(500);
     //turn right 90 degrees ->
     turnRight(255);
     delay(700); //we can use delays here since we're taking "manual" control and there is no line
@@ -244,30 +259,74 @@ void avoidObject(){
 
     //go forward | and pray we find the line
     goForward();
+    delay(200);
+
+  mainControl();
   }
 }
 
-/*
-void neoPixelControl(int state){
+void beforeStartNeoPixel()
+{
 
-
-  if(state == 1){
-    for (int i = 0; i < 4; i++) {
-    	LEDs.setPixelColor(i, 28, 252, 3);
-    }
-  }
-
-  if(state == 2)
-    for (int i = 0; i < 4; i++) {
-    	LEDs.setPixelColor(i, 252, 219 ,3);
-    }
-  }
-
-  if(state == 0)
-    for (int i = 0; i < 4; i++) {
-    	LEDs.setPixelColor(i, 252, 3, 3);
-    }
-	
+  LEDs.setPixelColor(0, 250, 5, 5);
+  LEDs.setPixelColor(1, 250, 5, 5);
+  LEDs.setPixelColor(2, 250, 5, 5);
+  LEDs.setPixelColor(3, 250, 5, 5);
   LEDs.show();
+ 
 }
-*/
+
+void startNeoPixel()
+{
+
+  LEDs.setPixelColor(0, 250, 251, 252);
+  LEDs.setPixelColor(1, 250, 251, 252);
+  LEDs.setPixelColor(2, 255, 3, 196);
+  LEDs.setPixelColor(3, 255, 3, 196);
+  LEDs.show();
+
+}
+
+void turnRightNeoPixel()
+{
+
+  LEDs.setPixelColor(0, 250, 251, 252);
+  LEDs.setPixelColor(1, 255, 3, 196);
+  LEDs.setPixelColor(2, 255, 3, 196);
+  LEDs.setPixelColor(3, 250, 251, 252);
+  LEDs.show();
+
+}
+
+void turnLeftNeoPixel()
+{
+
+  LEDs.setPixelColor(0, 255, 3, 196);
+  LEDs.setPixelColor(1, 250, 251, 252);
+  LEDs.setPixelColor(2, 250, 251, 252);
+  LEDs.setPixelColor(3, 255, 3, 196);
+  LEDs.show();
+
+}
+
+void goForwardNeoPixel()
+{
+  //chnage this to be cooler
+  LEDs.setPixelColor(0, 250, 251, 252);
+  LEDs.setPixelColor(1, 250, 251, 252);
+  LEDs.setPixelColor(2, 255, 3, 196);
+  LEDs.setPixelColor(3, 255, 3, 196);
+  LEDs.show();
+
+}
+
+void endNeoPixel()
+{
+
+  LEDs.setPixelColor(0, 56, 250, 2);
+  LEDs.setPixelColor(1, 255, 3, 3);
+  LEDs.setPixelColor(2, 5, 247, 235);
+  LEDs.setPixelColor(3, 231, 247, 2);
+  LEDs.show();
+
+}
