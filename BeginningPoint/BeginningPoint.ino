@@ -224,8 +224,10 @@ void lineCountAndGrabing(){
         moveStop();
         closeGripper();
         delay(1500); // Delay for gripper to close
-        turnLeft();//code lines for Turn-left 90 degrees, need to be replaced
-        delay(500);
+        goStraight();
+        delay(150);
+        turnLeft();
+        delay(50);
         startingPoint = false;
         lineCount++;
    }
@@ -233,6 +235,9 @@ void lineCountAndGrabing(){
 
 void loop(){
 
+    
     if(startingPoint){
+      delay(80);//time for removing hands
       lineCountAndGrabing();
     }
+}
