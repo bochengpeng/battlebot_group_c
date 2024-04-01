@@ -249,4 +249,11 @@ void loop(){
     
 
     
+<<<<<<< HEAD
+=======
+    if(startingPoint){
+      delay(80);//time for removing hands
+      lineCountAndGrab();
+    }
+>>>>>>> 78d4881af3c4bbe6c3bcb6aa44d96b42950e4004
 }
