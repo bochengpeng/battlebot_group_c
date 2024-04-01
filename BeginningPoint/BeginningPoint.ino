@@ -17,7 +17,8 @@ const int sensorPins[numSensors] = {A0, A1, A2, A3, A4, A5, A6, A7};
 const int threshold = 800; // Threshold value for black line detection
 
 int lineCount = 0;
-bool startingPoint = true;
+bool endPoint = false;
+bool lineMaze = false;
 
 void ISR_L(){
   countL++;
@@ -207,7 +208,7 @@ void checkSensors(bool sensorValues[]) {
     }
 }
 
-void lineCountAndGrabing(){
+void lineCountAndGrab(){
   if(lineCount < 4){
       openGripper();
       goStraight();
@@ -228,16 +229,24 @@ void lineCountAndGrabing(){
         delay(150);
         turnLeft();
         delay(50);
-        startingPoint = false;
+        lineMaze = true;
         lineCount++;
    }
 }
 
 void loop(){
+  
+    if(lineMaze == false){
+      delay(80);//time for removing hands
+      lineCountAndGrab();
+    }
+    
+    if(lineMaze == true && endPoint == false){
+      //code for lineMaze game;
+      maze();
+    }
 
     
-    if(startingPoint){
-      delay(80);//time for removing hands
-      lineCountAndGrabing();
-    }
+
+    
 }
