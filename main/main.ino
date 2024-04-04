@@ -11,6 +11,8 @@ const int turnLeftPin = 10;
 const int turnRightPin = 11;
 const int lineSensorPins[] = {A0, A1, A2, A3, A4, A5, A6, A7}; 
 const int gripperPin = 4;
+const int rightReversePin = 13;
+const int leftReversePin = 12;
 
 //ultrasonic sensor
 float sensorDistance = 0;
@@ -20,8 +22,8 @@ float sensorTime = 0;
 unsigned long lineTimer = 0;
 unsigned long previousTime = 0;
 unsigned long endTimer = 0;
-unsigned long avoidTimer = 0;
-int interval = 75;
+unsigned long previousSonicTime = 0;
+int interval = 50;
 unsigned long neoPixelTimer = 0;
 
 //lineSensor
@@ -30,6 +32,7 @@ int lineSensorValues[8];
 //start and end
 bool hasStarted = false;
 bool hasEnded = false;
+bool theEnd = false;
 
 Adafruit_NeoPixel LEDs(4, neoPixelPin, NEO_RGB + NEO_KHZ800);
 
@@ -73,53 +76,62 @@ void loop(){
   getSensorDistance();
   start();
   end();
-  if(hasStarted)
+  if(hasStarted == true)
   {
     avoidObject();
     getLineSensorValues();
     mainControl();
   }
+  
 }
 
 //TODO:
 //add comments
-//make neopixel cooler
+
 
 void getSensorDistance()
 {
-  digitalWrite(triggerPin, HIGH);
-  delayMicroseconds(5);
-  digitalWrite(triggerPin, LOW);
-  // Reads the echoPin, returns the sound wave travel time in microseconds
-  sensorTime = pulseIn(echoPin, HIGH);
-  // Calculating the distance
-  sensorDistance = sensorTime * 0.034 / 2;
+  if(hasEnded == false)
+  {
+    if(millis() - previousSonicTime >= 250)
+    {
+      sensorDistance = 0;
+      digitalWrite(triggerPin, LOW);
+      delayMicroseconds(3);
+      digitalWrite(triggerPin, HIGH); //turn on trigger
+      delayMicroseconds(9);
+      digitalWrite(triggerPin, LOW); //turn off trigger
+      sensorTime = pulseIn(echoPin, HIGH);  //get time
+      sensorDistance = (sensorTime*.0343)/2; //calculate distance
+      Serial.println(sensorDistance);
+      previousSonicTime = millis();
+    }
+  }
 }
 
 void getLineSensorValues()
 {
 
-	if(lineTimer <= millis())
+	if(millis() - lineTimer >= 40)
   {
-		for(int j = 0; j < sizeof(lineSensorPins); j++)
+		for(int j = 0; j < 8; j++)
     {
 			lineSensorValues[j] = analogRead(lineSensorPins[j]);
 		}
-		lineTimer = 50 + millis();
- 	}
+		lineTimer = millis();
+	}
 }
 
 void mainControl(){
 
-  getLineSensorValues();
   if(lineSensorValues[3] > 900){goForward();}
 	else if(lineSensorValues[4] > 900){goForward();}
-	else if(lineSensorValues[0] > 900){turnLeft(90);}
-	else if(lineSensorValues[1] > 900){turnLeft(60);}
+	else if(lineSensorValues[0] > 900){turnLeft(50);}
+	else if(lineSensorValues[1] > 900){turnLeft(40);}
 	else if(lineSensorValues[2] > 900){turnLeft(30);}
 	else if(lineSensorValues[5] > 900){turnRight(30);}
-	else if(lineSensorValues[6] > 900){turnRight(60);}
-	else if(lineSensorValues[7] > 900){turnRight(90);}
+	else if(lineSensorValues[6] > 900){turnRight(40);}
+	else if(lineSensorValues[7] > 900){turnRight(50);}
   
 }
 
@@ -147,12 +159,13 @@ void putDownObject()
 void goForward(){
   if(millis() - previousTime >= interval)
   {
+    goForwardNeoPixel();
     analogWrite(leftForwardPin, 224);
     analogWrite(rightForwardPin, 224);
     digitalWrite(turnLeftPin, 0);
     digitalWrite(turnRightPin, 0);
+    previousTime = millis();
   }
-  previousTime = millis();
 }
 
 void turnRight(int turnAmount)
@@ -165,8 +178,8 @@ void turnRight(int turnAmount)
     analogWrite(rightForwardPin, 0);
     analogWrite(turnRightPin, turnAmount);
     analogWrite(turnLeftPin, 0);
+    previousTime = millis();
   }
-  previousTime = millis();
 }
 
 void turnLeft(int turnAmount)
@@ -179,8 +192,8 @@ void turnLeft(int turnAmount)
     analogWrite(leftForwardPin, 0);
     analogWrite(turnLeftPin, turnAmount);
     analogWrite(turnRightPin, 0);
+    previousTime = millis();
   }
-  previousTime = millis();
 }
 
 void stop()
@@ -189,12 +202,22 @@ void stop()
   analogWrite(leftForwardPin, 0);
 	analogWrite(turnLeftPin, 0);
 	analogWrite(turnRightPin, 0);
+  analogWrite(rightReversePin, 0);
+  analogWrite(leftReversePin, 0);
+}
+
+void reverse()
+{
+  digitalWrite(rightReversePin, HIGH);
+  digitalWrite(leftReversePin, HIGH);
+	analogWrite(turnLeftPin, 0);
+	analogWrite(turnRightPin, 0);
 }
 
 void start()
 {
 
-  if(hasEnded == false && sensorDistance > 20 && hasStarted == false)
+  if(hasEnded == false && sensorDistance > 10 && hasStarted == false)
   {
     startNeoPixel();
     hasStarted = true;
@@ -210,58 +233,77 @@ void start()
 void end()
 {
 
-  if(lineSensorValues[0] > 900 && lineSensorValues[3] > 900 && lineSensorValues[7] > 900)
+  if(lineSensorValues[0] > 900 &&
+     lineSensorValues[1] > 900 && 
+     lineSensorValues[2] > 900 &&
+     lineSensorValues[3] > 900 &&
+     lineSensorValues[4] > 900 &&
+     lineSensorValues[5] > 900 &&
+     lineSensorValues[6] > 900 &&
+     lineSensorValues[7] > 900 && hasEnded == false)
   {
-    
-    if(millis() - endTimer >= 300)
+    getLineSensorValues();
+    if(millis() - endTimer >= 150)
     {
-      getLineSensorValues();
-      if(lineSensorValues[0] > 900 && lineSensorValues[3] > 900 && lineSensorValues[7] > 900)
+      if(lineSensorValues[0] > 900 &&
+         lineSensorValues[1] > 900 && 
+         lineSensorValues[2] > 900 &&
+         lineSensorValues[3] > 900 &&
+         lineSensorValues[4] > 900 &&
+         lineSensorValues[5] > 900 &&
+         lineSensorValues[6] > 900 &&
+         lineSensorValues[7] > 900 && theEnd == true)
       {
         endNeoPixel();
         hasEnded = true;
         hasStarted = false;
         stop();
         putDownObject();
-      } 
+        delay(500);
+        reverse();
+        delay(1000);
+        stop();
+      }
+      else{theEnd = false;}
+      endTimer = millis();
     }
-    endTimer = millis();
+    theEnd = true;
   }
+  else{theEnd = false;}
+
 }
 
 void avoidObject()
 {
-
   getSensorDistance();
-  if(sensorDistance <= 28)
+  if(sensorDistance <= 17)
   {
-
-    delay(500);
-    //turn right 90 degrees ->
-    turnRight(255);
+    //turn left 90 degrees ->
+    stop();
+    delay(200);
+    turnLeft(255);
     delay(700); //we can use delays here since we're taking "manual" control and there is no line
 
     //go forward a bit |
     goForward();
-    delay(500);
+    delay(250);
 
-    //turn left <-
-    turnLeft(255);
+    //turn right <-
+    turnRight(255);
     delay(700);
 
     //go forward |
     goForward();
-    delay(1000);
+    delay(500);
 
-    //turn left <-
-    turnLeft(255);
+    //turn right ->
+    turnRight(255);
     delay(300);
 
     //go forward | and pray we find the line
     goForward();
-    delay(200);
+    delay(300);
 
-  mainControl();
   }
 }
 
@@ -311,7 +353,6 @@ void turnLeftNeoPixel()
 
 void goForwardNeoPixel()
 {
-  //chnage this to be cooler
   LEDs.setPixelColor(0, 250, 251, 252);
   LEDs.setPixelColor(1, 250, 251, 252);
   LEDs.setPixelColor(2, 255, 3, 196);
@@ -323,10 +364,10 @@ void goForwardNeoPixel()
 void endNeoPixel()
 {
 
-  LEDs.setPixelColor(0, 56, 250, 2);
-  LEDs.setPixelColor(1, 255, 3, 3);
-  LEDs.setPixelColor(2, 5, 247, 235);
-  LEDs.setPixelColor(3, 231, 247, 2);
+  LEDs.setPixelColor(0, 255, 3, 196);
+  LEDs.setPixelColor(1, 255, 3, 196);
+  LEDs.setPixelColor(2, 255, 3, 196);
+  LEDs.setPixelColor(3, 255, 3, 196);
   LEDs.show();
 
 }
