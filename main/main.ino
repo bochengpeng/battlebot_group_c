@@ -21,7 +21,7 @@ unsigned long lineTimer = 0;
 unsigned long previousTime = 0;
 unsigned long endTimer = 0;
 unsigned long avoidTimer = 0;
-int interval = 10;
+int interval = 75;
 unsigned long neoPixelTimer = 0;
 
 //lineSensor
@@ -104,14 +104,14 @@ void getLineSensorValues()
 		for(int j = 0; j < sizeof(lineSensorPins); j++)
     {
 			lineSensorValues[j] = analogRead(lineSensorPins[j]);
-      
 		}
-		lineTimer = 5 + millis();
+		lineTimer = 50 + millis();
  	}
 }
 
 void mainControl(){
 
+  getLineSensorValues();
   if(lineSensorValues[3] > 900){goForward();}
 	else if(lineSensorValues[4] > 900){goForward();}
 	else if(lineSensorValues[0] > 900){turnLeft(90);}
@@ -147,7 +147,6 @@ void putDownObject()
 void goForward(){
   if(millis() - previousTime >= interval)
   {
-    goForwardNeoPixel();
     analogWrite(leftForwardPin, 224);
     analogWrite(rightForwardPin, 224);
     digitalWrite(turnLeftPin, 0);
@@ -213,7 +212,7 @@ void end()
 
   if(lineSensorValues[0] > 900 && lineSensorValues[3] > 900 && lineSensorValues[7] > 900)
   {
-    getLineSensorValues();
+    
     if(millis() - endTimer >= 300)
     {
       getLineSensorValues();
@@ -324,10 +323,10 @@ void goForwardNeoPixel()
 void endNeoPixel()
 {
 
-  LEDs.setPixelColor(0, 255, 3, 196);
-  LEDs.setPixelColor(1, 255, 3, 196);
-  LEDs.setPixelColor(2, 255, 3, 196);
-  LEDs.setPixelColor(3, 255, 3, 196);
+  LEDs.setPixelColor(0, 56, 250, 2);
+  LEDs.setPixelColor(1, 255, 3, 3);
+  LEDs.setPixelColor(2, 5, 247, 235);
+  LEDs.setPixelColor(3, 231, 247, 2);
   LEDs.show();
 
 }
