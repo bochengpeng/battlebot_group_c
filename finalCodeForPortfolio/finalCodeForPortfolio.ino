@@ -49,10 +49,6 @@ bool onSquareStart = false;
 bool gameStart = false;
 bool start = false;
 
-//LineMaze Game
-bool deadEndFlag = false;
-int consecutiveDeadEndCount = 0;
-
 //Left and Right wheel Count
 volatile int countL = 0;
 volatile int countR = 0;
@@ -423,7 +419,7 @@ void checkEndCondition(){
             // count duration
             unsigned long duration = millis() - startTime;
             if (duration >= durationThreshold) {
-                endGame == true;
+                endGame = true;
                 gameStart = false;
             }
         }
