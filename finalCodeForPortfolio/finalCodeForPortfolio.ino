@@ -458,7 +458,7 @@ void startTrigger() {
                                           */
 
 // Function to set servo angle 
-void setServoAngle(int angle, int gripperPin){
+void setServoAngle(int angle, int gripperPin) {
   int pulseWidth = map(angle, 0, 180, minPulseWidth, maxPulseWidth);
   digitalWrite(gripperPin, HIGH); // Start the pulse
   delayMicroseconds(pulseWidth); // Wait for the pulse width
@@ -466,11 +466,11 @@ void setServoAngle(int angle, int gripperPin){
   delay(20); // wait for servo to settle
 }
 
-void gripOpen(){
+void gripOpen() {
   setServoAngle(90,gripperPin);
 }
 
-void gripClose(){
+void gripClose() {
   setServoAngle(2,gripperPin);
 }
 
@@ -561,8 +561,7 @@ void setup() {
     pinMode(gripperPin,OUTPUT); 
     
     //initialises the gripper
-    for (int i = 0; i < 4; i++)
-    {
+    for (int i = 0; i < 4; i++) {
       gripOpen();
     }
     gripOpen();
@@ -603,19 +602,19 @@ void setup() {
 
 void loop() {
   
-        if(startingPoint == true && endGame == false && gameStart == false){ 
+        if(startingPoint == true && endGame == false && gameStart == false) { 
             startTrigger();    
             if(start == true){
               startUp();
             }            
         }
         
-        if(startingPoint == false && endGame == false && gameStart == true){
+        if(startingPoint == false && endGame == false && gameStart == true) {
             maze();
             checkEndCondition();
         }
     
-        if(startingPoint == false && endGame == true && gameStart == false){
+        if(startingPoint == false && endGame == true && gameStart == false) {
             finalDrop();
         }
 }
